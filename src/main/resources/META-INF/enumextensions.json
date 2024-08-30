@@ -1,0 +1,49 @@
+{
+  "entries": [
+    {
+      "enum": "net/minecraft/world/entity/raid/Raid$RaiderType",
+      "name": "WORLDMODIFIERS_VINDICATOR89",
+      "constructor": "(Ljava/util/function/Supplier;[I)V",
+      "parameters": {
+        "class": "lych/worldmodifiers/util/ExtraRaiderTypes",
+        "field": "VINDICATOR89_PROXY"
+      }
+    },
+    {
+      "enum": "net/minecraft/world/entity/raid/Raid$RaiderType",
+      "name": "WORLDMODIFIERS_EVOKER89",
+      "constructor": "(Ljava/util/function/Supplier;[I)V",
+      "parameters": {
+        "class": "lych/worldmodifiers/util/ExtraRaiderTypes",
+        "field": "EVOKER89_PROXY"
+      }
+    },
+    {
+      "enum": "net/minecraft/world/entity/raid/Raid$RaiderType",
+      "name": "WORLDMODIFIERS_PILLAGER89",
+      "constructor": "(Ljava/util/function/Supplier;[I)V",
+      "parameters": {
+        "class": "lych/worldmodifiers/util/ExtraRaiderTypes",
+        "field": "PILLAGER89_PROXY"
+      }
+    },
+    {
+      "enum": "net/minecraft/world/entity/raid/Raid$RaiderType",
+      "name": "WORLDMODIFIERS_WITCH89",
+      "constructor": "(Ljava/util/function/Supplier;[I)V",
+      "parameters": {
+        "class": "lych/worldmodifiers/util/ExtraRaiderTypes",
+        "field": "WITCH89_PROXY"
+      }
+    },
+    {
+      "enum": "net/minecraft/world/entity/raid/Raid$RaiderType",
+      "name": "WORLDMODIFIERS_RAVAGER89",
+      "constructor": "(Ljava/util/function/Supplier;[I)V",
+      "parameters": {
+        "class": "lych/worldmodifiers/util/ExtraRaiderTypes",
+        "field": "RAVAGER89_PROXY"
+      }
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "lych.worldmodifiers.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "worldmodifiers.refmap.json",
+  "mixins": [
+    "AbstractSkeletonMixin",
+    "BeeMixin",
+    "CaveSpiderMixin",
+    "DerivedLevelDataMixin",
+    "PillagerMixin",
+    "PrimaryLevelDataMixin",
+    "RaiderTypeAccessor",
+    "RaidMixin",
+    "SpiderMixin",
+    "VindicatorMixin",
+    "WitherSkullMixin",
+    "ZombieMixin"
+  ],
+  "client": [
+    "ConfirmScreenAccessor",
+    "ShareToLanScreenMixin",
+    "client.ClientLevelDataMixin",
+    "client.CreateWorldScreenMixin",
+    "client.CreateWorldScreenMixin$GameTabMixin",
+    "client.OnlineOptionsScreenMixin",
+    "client.OptionsScreenMixin",
+    "client.WorldCreationUiStateMixin",
+    "client.WorldListEntryMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "verbose": false
+}
