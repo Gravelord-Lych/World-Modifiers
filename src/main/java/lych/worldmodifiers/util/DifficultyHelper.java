@@ -14,6 +14,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.providers.EnchantmentProvider;
 import net.minecraft.world.item.enchantment.providers.SingleEnchantment;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.storage.LevelData;
 
 public final class DifficultyHelper {
@@ -34,7 +35,7 @@ public final class DifficultyHelper {
 
     private DifficultyHelper() {}
 
-    public static boolean isExtremeDifficulty(Level level) {
+    public static boolean isExtremeDifficulty(LevelAccessor level) {
         return isExtremeDifficulty(level.getLevelData());
     }
 

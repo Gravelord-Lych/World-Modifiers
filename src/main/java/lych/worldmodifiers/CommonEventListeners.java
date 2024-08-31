@@ -2,6 +2,9 @@ package lych.worldmodifiers;
 
 import lych.worldmodifiers.network.ExtremeDifficultyNetwork;
 import lych.worldmodifiers.util.DifficultyHelper;
+import lych.worldmodifiers.util.IDedicatedServerPropertiesMixin;
+import lych.worldmodifiers.util.mixin.IAdditionalLevelData;
+import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -11,6 +14,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
 @EventBusSubscriber(modid = WorldModifiers.MODID)
@@ -34,6 +38,14 @@ public final class CommonEventListeners {
         if (event.getEntity() instanceof Player player) {
             handleExtremeDifficultyDamage(event, player);
             handleExtremeDifficultyStarvationDamage(event, player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onServerAboutToStart(ServerAboutToStartEvent event) {
+        if (event.getServer() instanceof DedicatedServer server) {
+            ((IAdditionalLevelData) server.getWorldData()).worldModifiers$setExtremeDifficulty(
+                            ((IDedicatedServerPropertiesMixin) server.getProperties()).worldModifiers$isExtremeDifficulty());
         }
     }
 

@@ -8,7 +8,9 @@
     "AbstractSkeletonMixin",
     "BeeMixin",
     "CaveSpiderMixin",
+    "DedicatedServerPropertiesMixin",
     "DerivedLevelDataMixin",
+    "LevelMixin",
     "PillagerMixin",
     "PrimaryLevelDataMixin",
     "RaiderTypeAccessor",
@@ -16,6 +18,7 @@
     "SpiderMixin",
     "VindicatorMixin",
     "WitherSkullMixin",
+    "WorldGenRegionMixin",
     "ZombieMixin"
   ],
   "client": [
@@ -24,6 +27,7 @@
     "client.ClientLevelDataMixin",
     "client.CreateWorldScreenMixin",
     "client.CreateWorldScreenMixin$GameTabMixin",
+    "client.DebugScreenOverlayMixin",
     "client.OnlineOptionsScreenMixin",
     "client.OptionsScreenMixin",
     "client.WorldCreationUiStateMixin",

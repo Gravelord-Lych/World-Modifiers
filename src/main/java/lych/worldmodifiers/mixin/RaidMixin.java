@@ -1,6 +1,7 @@
 package lych.worldmodifiers.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -8,7 +9,6 @@ import lych.worldmodifiers.util.DifficultyHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.raid.Raid;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -56,15 +56,24 @@ public abstract class RaidMixin {
         return i;
     }
 
-    @Inject(method = "getPotentialBonusSpawns", at = @At("HEAD"), cancellable = true)
-    private void worldModifiers$modifyMaxBonusSpawnOfWave89(Raid.RaiderType raiderType, RandomSource random, int wave, DifficultyInstance difficulty, boolean shouldSpawnBonusGroup, CallbackInfoReturnable<Integer> cir) {
+    @ModifyReturnValue(method = "getPotentialBonusSpawns", at = @At("RETURN"))
+    private int worldModifiers$modifyMaxBonusSpawnOfWave89(int original,
+                                                           @Local(argsOnly = true) Raid.RaiderType raiderType,
+                                                           @Local(argsOnly = true) RandomSource random,
+                                                           @Local(argsOnly = true) int wave,
+                                                           @Local(argsOnly = true) boolean shouldSpawnBonusGroup) {
+        // If true, the raiderType must be a vanilla raider, so do not spawn bonus raiders
+        if (wave > 7 && (raiderType == Raid.RaiderType.VINDICATOR ||
+                        raiderType == Raid.RaiderType.EVOKER ||
+                        raiderType == Raid.RaiderType.PILLAGER ||
+                        raiderType == Raid.RaiderType.WITCH ||
+                        raiderType == Raid.RaiderType.RAVAGER)) {
+            return 0;
+        }
         int maxBonusSpawn = DifficultyHelper.updateMaxRaidBonusSpawn(wave, shouldSpawnBonusGroup, raiderType);
-        // If true, the raiderType cannot be a raider added by this mod, so do not spawn bonus raiders
-        if (wave > 7 && maxBonusSpawn < 0) {
-            cir.setReturnValue(0);
+        if (maxBonusSpawn < 0) {
+            return original;
         }
-        if (maxBonusSpawn >= 0) {
-            cir.setReturnValue(maxBonusSpawn > 0 ? random.nextInt(maxBonusSpawn + 1) : 0);
-        }
+        return (maxBonusSpawn > 0 ? random.nextInt(maxBonusSpawn + 1) : 0);
     }
 }
