@@ -1,9 +1,11 @@
 package lych.worldmodifiers.util.mixin;
 
-import lych.worldmodifiers.modifier.ModifierMap;
+import lych.worldmodifiers.modifier.StoredModifiers;
 
 public interface IMinecraftServerMixin {
-    ModifierMap worldModifiers$getModifierMap();
+    StoredModifiers worldModifiers$getStoredModifiers();
 
-    void worldModifiers$saveModifierMap();
+    void worldModifiers$saveModifiers();
+
+    void worldModifiers$loadModifiers();
 }

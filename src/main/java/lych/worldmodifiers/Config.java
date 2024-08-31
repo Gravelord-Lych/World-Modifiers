@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("all") // This is just an example class
-@EventBusSubscriber(modid = WorldModifiers.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = WorldModifiersMod.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class Config {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 

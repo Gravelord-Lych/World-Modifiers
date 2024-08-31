@@ -1,6 +1,6 @@
 package lych.worldmodifiers.enchantment.provider;
 
-import lych.worldmodifiers.WorldModifiers;
+import lych.worldmodifiers.WorldModifiersMod;
 import lych.worldmodifiers.util.DifficultyHelper;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
@@ -21,6 +21,6 @@ public final class ModEnchantmentProviders {
     }
 
     public static ResourceKey<EnchantmentProvider> create(String name) {
-        return ResourceKey.create(Registries.ENCHANTMENT_PROVIDER, WorldModifiers.prefix(name));
+        return ResourceKey.create(Registries.ENCHANTMENT_PROVIDER, WorldModifiersMod.prefix(name));
     }
 }

@@ -1,16 +1,43 @@
 package lych.worldmodifiers.modifier;
 
-import net.minecraft.nbt.CompoundTag;
+import com.google.gson.JsonObject;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
-import javax.annotation.concurrent.Immutable;
-
-@Immutable
 public interface Modifier<T> {
-    String getName();
+    String NAME = "modifier";
+    String NAME_PROPERTY = "name";
+    String DATA_PROPERTY = "data";
+    String VALUE_PROPERTY = "value";
+
+    ResourceLocation getName();
+
+    Component getDisplayName();
 
     T getDefaultValue();
 
-    CompoundTag save(T value);
+    void serializeToJson(T value, JsonObject data);
 
-    T load(CompoundTag tag);
+    T deserializeFromJson(JsonObject data);
+
+    void serializeToNetwork(T value, FriendlyByteBuf buf);
+
+    T deserializeFromNetwork(FriendlyByteBuf buf);
+
+    default boolean hasValueRange() {
+        return false;
+    }
+
+    default T getMinValue() {
+        throw new UnsupportedOperationException();
+    }
+
+    default T getMaxValue() {
+        throw new UnsupportedOperationException();
+    }
+
+    default T sanitizeValue(T value) {
+        throw new UnsupportedOperationException();
+    }
 }

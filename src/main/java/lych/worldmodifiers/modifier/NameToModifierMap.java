@@ -10,7 +10,7 @@ public final class NameToModifierMap {
     private NameToModifierMap() {}
 
     public static void put(Modifier<?> modifier) {
-        NAME_TO_MODIFIER_MAP.put(modifier.getName(), modifier);
+        NAME_TO_MODIFIER_MAP.put(modifier.getName().toString(), modifier);
     }
 
     public static Optional<Modifier<?>> byName(String name) {

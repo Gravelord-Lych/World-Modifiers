@@ -27,13 +27,12 @@ public final class ExtremeDifficultyNetwork {
 
         public void handleData(Packet data, IPayloadContext context) {
             context.enqueueWork(() -> {
-                        DifficultyHelper.setExtremeDifficulty(context.player().level(), data.extremeDifficulty(), false);
-                        LOGGER.info("Received packet with value: {}", data.extremeDifficulty());
-                    })
-                    .exceptionally(e -> {
-                        LOGGER.error("Error handling packet", e);
-                        return null;
-                    });
+                DifficultyHelper.setExtremeDifficulty(context.player().level(), data.extremeDifficulty(), false);
+                LOGGER.debug("Received extreme difficulty packet with value: {}", data.extremeDifficulty());
+            }).exceptionally(e -> {
+                LOGGER.error("Error handling packet", e);
+                return null;
+            });
         }
     }
 

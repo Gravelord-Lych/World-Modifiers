@@ -20,7 +20,6 @@ import net.minecraft.world.level.storage.LevelData;
 public final class DifficultyHelper {
     public static final Component EXTREME_DIFFICULTY = Component.translatable("selectWorld.extremeDifficulty");
     public static final Component EXTREME_DIFFICULTY_INFO = Component.translatable("selectWorld.extremeDifficulty.info");
-    public static final String WORLD_MODIFIERS_TAG = "WorldModifiers";
     public static final String EXTREME_DIFFICULTY_TAG = "ExtremeDifficulty";
     public static final double OPTION_SCREEN_HEAD_HEIGHT_MULTIPLIER = 1.35;
     public static final float EXTREME_DIFFICULTY_DAMAGE_SCALING_FROM_NORMAL = 2.0F;

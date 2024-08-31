@@ -11,6 +11,7 @@
     "DedicatedServerPropertiesMixin",
     "DerivedLevelDataMixin",
     "LevelMixin",
+    "MinecraftServerMixin",
     "PillagerMixin",
     "PrimaryLevelDataMixin",
     "RaiderTypeAccessor",

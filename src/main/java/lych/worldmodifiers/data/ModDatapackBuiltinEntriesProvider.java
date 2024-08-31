@@ -1,6 +1,6 @@
 package lych.worldmodifiers.data;
 
-import lych.worldmodifiers.WorldModifiers;
+import lych.worldmodifiers.WorldModifiersMod;
 import lych.worldmodifiers.enchantment.provider.ModEnchantmentProviders;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
@@ -16,6 +16,6 @@ public class ModDatapackBuiltinEntriesProvider extends DatapackBuiltinEntriesPro
             .add(Registries.ENCHANTMENT_PROVIDER, ModEnchantmentProviders::bootstrap);
 
     public ModDatapackBuiltinEntriesProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, registries, BUILDER, Set.of(WorldModifiers.MODID));
+        super(output, registries, BUILDER, Set.of(WorldModifiersMod.MODID));
     }
 }

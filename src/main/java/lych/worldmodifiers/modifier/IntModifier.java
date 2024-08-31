@@ -6,22 +6,27 @@ import lych.worldmodifiers.WorldModifiersMod;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 import java.util.Objects;
 
-public final class BooleanModifier implements Modifier<Boolean> {
+public final class IntModifier implements Modifier<Integer> {
     private final ResourceLocation name;
     private final Component component;
-    private final boolean defaultValue;
+    private final int defaultValue;
+    private final int minValue;
+    private final int maxValue;
 
-    public BooleanModifier(String name, boolean defaultValue) {
-        this(name, WorldModifiersMod.MODID, defaultValue);
+    public IntModifier(String name, int defaultValue, int minValue, int maxValue) {
+        this(name, WorldModifiersMod.MODID, defaultValue, minValue, maxValue);
     }
 
-    public BooleanModifier(String name, String id, boolean defaultValue) {
+    public IntModifier(String name, String id, int defaultValue, int minValue, int maxValue) {
         this.name = ResourceLocation.fromNamespaceAndPath(id, name);
         this.component = Component.translatable(Modifier.NAME + "." + id + "." + name);
         this.defaultValue = defaultValue;
+        this.minValue = minValue;
+        this.maxValue = maxValue;
         NameToModifierMap.put(this);
     }
 
@@ -36,28 +41,48 @@ public final class BooleanModifier implements Modifier<Boolean> {
     }
 
     @Override
-    public Boolean getDefaultValue() {
+    public Integer getDefaultValue() {
         return defaultValue;
     }
 
     @Override
-    public void serializeToJson(Boolean value, JsonObject data) {
+    public boolean hasValueRange() {
+        return true;
+    }
+
+    @Override
+    public Integer getMinValue() {
+        return minValue;
+    }
+
+    @Override
+    public Integer getMaxValue() {
+        return maxValue;
+    }
+
+    @Override
+    public Integer sanitizeValue(Integer value) {
+        return Mth.clamp(value, minValue, maxValue);
+    }
+
+    @Override
+    public void serializeToJson(Integer value, JsonObject data) {
         data.addProperty(VALUE_PROPERTY, value);
     }
 
     @Override
-    public Boolean deserializeFromJson(JsonObject data) {
-        return data.get(VALUE_PROPERTY).getAsBoolean();
+    public Integer deserializeFromJson(JsonObject data) {
+        return data.get(VALUE_PROPERTY).getAsInt();
     }
 
     @Override
-    public void serializeToNetwork(Boolean value, FriendlyByteBuf buf) {
-        buf.writeBoolean(value);
+    public void serializeToNetwork(Integer value, FriendlyByteBuf buf) {
+        buf.writeInt(value);
     }
 
     @Override
-    public Boolean deserializeFromNetwork(FriendlyByteBuf buf) {
-        return buf.readBoolean();
+    public Integer deserializeFromNetwork(FriendlyByteBuf buf) {
+        return buf.readInt();
     }
 
     @Override
@@ -72,7 +97,7 @@ public final class BooleanModifier implements Modifier<Boolean> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BooleanModifier that = (BooleanModifier) o;
+        IntModifier that = (IntModifier) o;
         return defaultValue == that.defaultValue && Objects.equals(getName(), that.getName());
     }
 

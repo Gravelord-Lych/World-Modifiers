@@ -5,7 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.serialization.Dynamic;
 import lych.worldmodifiers.util.DifficultyHelper;
-import lych.worldmodifiers.WorldModifiers;
+import lych.worldmodifiers.WorldModifiersMod;
 import lych.worldmodifiers.mixin.ConfirmScreenAccessor;
 import lych.worldmodifiers.util.mixin.ICreateWorldScreenMixin;
 import lych.worldmodifiers.util.mixin.IWorldCreationUiStateMixin;
@@ -39,7 +39,7 @@ public class WorldListEntryMixin {
         try {
             worldModifiers$readAdditionalData(access.getDataTag(), (ICreateWorldScreenMixin) screen);
         } catch (Exception e) {
-            WorldModifiers.LOGGER.warn("Unable to read additional data when recreating world", e);
+            WorldModifiersMod.LOGGER.warn("Unable to read additional data when recreating world", e);
         }
         return screen;
     }
@@ -59,11 +59,11 @@ public class WorldListEntryMixin {
         try {
             dataTag = access.getDataTag();
         } catch (Exception e) {
-            WorldModifiers.LOGGER.warn("Unable to read additional data when recreating old customized world", e);
+            WorldModifiersMod.LOGGER.warn("Unable to read additional data when recreating old customized world", e);
             return;
         }
         if (!(minecraft.screen instanceof ConfirmScreen confirmScreen)) {
-            WorldModifiers.LOGGER.warn("Unable to handle mod data when recreating old customized world");
+            WorldModifiersMod.LOGGER.warn("Unable to handle mod data when recreating old customized world");
             return;
         }
         final Dynamic<?> finalDataTag = dataTag;

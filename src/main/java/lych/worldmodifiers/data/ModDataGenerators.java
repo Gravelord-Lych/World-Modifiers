@@ -1,6 +1,6 @@
 package lych.worldmodifiers.data;
 
-import lych.worldmodifiers.WorldModifiers;
+import lych.worldmodifiers.WorldModifiersMod;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -11,7 +11,7 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 import java.util.concurrent.CompletableFuture;
 
-@EventBusSubscriber(modid = WorldModifiers.MODID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = WorldModifiersMod.MODID, bus = EventBusSubscriber.Bus.MOD)
 public final class ModDataGenerators {
     private ModDataGenerators() {}
 

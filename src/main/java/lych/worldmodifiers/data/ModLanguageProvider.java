@@ -1,7 +1,7 @@
 package lych.worldmodifiers.data;
 
+import lych.worldmodifiers.WorldModifiersMod;
 import lych.worldmodifiers.util.DifficultyHelper;
-import lych.worldmodifiers.WorldModifiers;
 import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -9,7 +9,7 @@ import net.neoforged.neoforge.common.data.LanguageProvider;
 
 public abstract class ModLanguageProvider extends LanguageProvider {
     public ModLanguageProvider(PackOutput output, String locale) {
-        super(output, WorldModifiers.MODID, locale);
+        super(output, WorldModifiersMod.MODID, locale);
     }
 
     public void add(Component key, String value) {

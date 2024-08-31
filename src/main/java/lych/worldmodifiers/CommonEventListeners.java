@@ -1,10 +1,13 @@
 package lych.worldmodifiers;
 
 import lych.worldmodifiers.network.ExtremeDifficultyNetwork;
+import lych.worldmodifiers.network.ModifiersNetwork;
 import lych.worldmodifiers.util.DifficultyHelper;
 import lych.worldmodifiers.util.IDedicatedServerPropertiesMixin;
 import lych.worldmodifiers.util.mixin.IAdditionalLevelData;
+import lych.worldmodifiers.util.mixin.IMinecraftServerMixin;
 import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -17,7 +20,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
-@EventBusSubscriber(modid = WorldModifiers.MODID)
+@EventBusSubscriber(modid = WorldModifiersMod.MODID)
 public final class CommonEventListeners {
     private CommonEventListeners() {}
 
@@ -43,10 +46,12 @@ public final class CommonEventListeners {
 
     @SubscribeEvent
     public static void onServerAboutToStart(ServerAboutToStartEvent event) {
-        if (event.getServer() instanceof DedicatedServer server) {
-            ((IAdditionalLevelData) server.getWorldData()).worldModifiers$setExtremeDifficulty(
-                            ((IDedicatedServerPropertiesMixin) server.getProperties()).worldModifiers$isExtremeDifficulty());
+        if (event.getServer() instanceof DedicatedServer dedicatedServer) {
+            ((IAdditionalLevelData) dedicatedServer.getWorldData()).worldModifiers$setExtremeDifficulty(
+                            ((IDedicatedServerPropertiesMixin) dedicatedServer.getProperties()).worldModifiers$isExtremeDifficulty());
         }
+        ((IMinecraftServerMixin) event.getServer()).worldModifiers$loadModifiers();
+        ((IMinecraftServerMixin) event.getServer()).worldModifiers$saveModifiers();
     }
 
     @SuppressWarnings("deprecation")
@@ -62,8 +67,12 @@ public final class CommonEventListeners {
         }
     }
 
+    @SuppressWarnings("DataFlowIssue")
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        ExtremeDifficultyNetwork.sendDifficultyToClient(DifficultyHelper.isExtremeDifficultyInData(event.getEntity().level().getLevelData()));
+        ServerPlayer player = (ServerPlayer) event.getEntity();
+        ExtremeDifficultyNetwork.sendDifficultyToClient(DifficultyHelper.isExtremeDifficultyInData(player.level().getLevelData()));
+        ModifiersNetwork.sendModifierMapToClient(player,
+                ((IMinecraftServerMixin) player.getServer()).worldModifiers$getStoredModifiers().getModifierMap());
     }
 }
