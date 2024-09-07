@@ -2,6 +2,7 @@ package lych.worldmodifiers.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -9,14 +10,13 @@ import lych.worldmodifiers.util.DifficultyHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.raid.Raid;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Raid.class)
 public abstract class RaidMixin {
@@ -33,17 +33,18 @@ public abstract class RaidMixin {
         return original.call(instance, difficulty) + (DifficultyHelper.isExtremeDifficulty(level) ? DifficultyHelper.EXTREME_DIFFICULTY_RAID_WAVES - 7 : 0);
     }
 
-    @Inject(method = "getDefaultNumSpawns", at = @At("HEAD"), cancellable = true)
-    private void worldModifiers$fixBaseSpawnCount(Raid.RaiderType raiderType, int wave, boolean shouldSpawnBonusGroup, CallbackInfoReturnable<Integer> cir) {
+    @WrapMethod(method = "getPotentialBonusSpawns")
+    private int worldModifiers$fixBaseSpawnCount(Raid.RaiderType raiderType, RandomSource random, int wave, DifficultyInstance difficultyInstance, boolean shouldSpawnBonusGroup, Operation<Integer> original) {
         if (shouldSpawnBonusGroup) {
             if (numGroups >= ((RaiderTypeAccessor) (Object) raiderType).getSpawnsPerWaveBeforeBonus().length) {
-                cir.setReturnValue(0);
+                return 0;
             }
         } else {
             if (wave >= ((RaiderTypeAccessor) (Object) raiderType).getSpawnsPerWaveBeforeBonus().length) {
-                cir.setReturnValue(0);
+                return 0;
             }
         }
+        return original.call(raiderType, random, wave, difficultyInstance, shouldSpawnBonusGroup);
     }
 
     @ModifyExpressionValue(method = "getPotentialBonusSpawns",
