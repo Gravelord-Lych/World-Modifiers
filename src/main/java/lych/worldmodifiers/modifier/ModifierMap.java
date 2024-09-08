@@ -6,6 +6,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
+import lych.worldmodifiers.modifier.category.Modifier;
 import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import org.slf4j.Logger;
@@ -27,6 +28,12 @@ public class ModifierMap {
 
     public void resetAllModifiers() {
         NameToModifierMap.viewAll().forEach((name, modifier) -> modifiers.put(modifier, modifier.getDefaultValue()));
+    }
+
+    public ModifierMap copy() {
+        ModifierMap copy = new ModifierMap();
+        copy.reloadFrom(this);
+        return copy;
     }
 
     public void reloadFrom(ModifierMap other) {
@@ -55,15 +62,26 @@ public class ModifierMap {
     @SuppressWarnings("unchecked")
     public <T> T setModifierValue(Modifier<T> modifier, T value) {
         Objects.requireNonNull(value, "Value cannot be null");
-        value = modifier.sanitizeValue(value);
-        T oldValue = (T) modifiers.put(modifier, value);
+        T sanitizedValue = trySanitizeValue(modifier, value);
+        T oldValue = (T) modifiers.put(modifier, sanitizedValue);
         if (oldValue == null) {
             oldValue = modifier.getDefaultValue();
         }
-        if (value != oldValue) {
+        if (sanitizedValue != oldValue) {
             setDirty();
         }
         return oldValue;
+    }
+
+    private static <T> T trySanitizeValue(Modifier<T> modifier, T value) {
+        if (!modifier.hasValueRange()) {
+            return value;
+        }
+        T sanitizedValue = modifier.sanitizeValue(value);
+        if (!Objects.equals(value, sanitizedValue)) {
+            LOGGER.info("Sanitized value for modifier {}: {} -> {}", modifier.getName(), value, sanitizedValue);
+        }
+        return sanitizedValue;
     }
 
     private static void warnUnknown(String name) {

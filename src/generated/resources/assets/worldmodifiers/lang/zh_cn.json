@@ -1,4 +1,19 @@
 {
-  "selectWorld.extremeDifficulty": "极难",
-  "selectWorld.extremeDifficulty.info": "敌对生物会生成，且伤害更高。饥饿值耗尽会带来更加致命的影响。"
+  "modifier.worldmodifiers.max_health": "最大生命值",
+  "modifier.worldmodifiers.movement_speed": "移动速度",
+  "modifierCategory.worldmodifiers.base": "默认调节器",
+  "modifierCategory.worldmodifiers.creature": "友好生物",
+  "modifierCategory.worldmodifiers.entity": "实体",
+  "modifierCategory.worldmodifiers.living_entity": "生物",
+  "modifierCategory.worldmodifiers.mob": "非玩家生物",
+  "modifierCategory.worldmodifiers.monster": "敌对生物",
+  "modifierCategory.worldmodifiers.player": "玩家",
+  "worldmodifiers.editModifier.default": "默认值: %s",
+  "worldmodifiers.editModifier.title": "编辑调节器",
+  "worldmodifiers.narrator.button.fold": "折叠调节器",
+  "worldmodifiers.narrator.button.fold.folded": "已折叠",
+  "worldmodifiers.narrator.button.fold.unfolded": "未折叠",
+  "worldmodifiers.selectWorld.extremeDifficulty": "极难",
+  "worldmodifiers.selectWorld.extremeDifficulty.info": "敌对生物会生成，且伤害更高。饥饿值耗尽会带来更加致命的影响。",
+  "worldmodifiers.selectWorld.modifiers": "调节器"
 }

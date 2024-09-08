@@ -28,6 +28,7 @@
     "client.ClientLevelDataMixin",
     "client.CreateWorldScreenMixin",
     "client.CreateWorldScreenMixin$GameTabMixin",
+    "client.CreateWorldScreenMixin$MoreTabMixin",
     "client.DebugScreenOverlayMixin",
     "client.OnlineOptionsScreenMixin",
     "client.OptionsScreenMixin",

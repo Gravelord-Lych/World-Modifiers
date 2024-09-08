@@ -1,7 +1,7 @@
 package lych.worldmodifiers.network;
 
 import com.mojang.logging.LogUtils;
-import lych.worldmodifiers.modifier.Modifier;
+import lych.worldmodifiers.modifier.category.Modifier;
 import lych.worldmodifiers.modifier.ModifierMap;
 import lych.worldmodifiers.modifier.NameToModifierMap;
 import lych.worldmodifiers.util.ModifiersHelper;

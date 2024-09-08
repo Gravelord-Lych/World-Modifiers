@@ -1,18 +1,22 @@
 package lych.worldmodifiers.util;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import lych.worldmodifiers.modifier.Modifier;
+import lych.worldmodifiers.WorldModifiersMod;
+import lych.worldmodifiers.modifier.category.Modifier;
 import lych.worldmodifiers.modifier.ModifierMap;
 import lych.worldmodifiers.modifier.StoredModifiers;
 import lych.worldmodifiers.network.ModifiersNetwork;
 import lych.worldmodifiers.util.mixin.IAdditionalClientLevelData;
 import lych.worldmodifiers.util.mixin.IMinecraftServerMixin;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.LevelAccessor;
 
 import java.util.Objects;
 
 public final class ModifiersHelper {
+    public static final Component MODIFIERS = WorldModifiersMod.prefixMsg("selectWorld.modifiers");
+
     private ModifiersHelper() {}
 
     public static <T> T getModifierValue(LevelAccessor level, Modifier<T> modifier) {

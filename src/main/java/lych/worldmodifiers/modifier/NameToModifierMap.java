@@ -1,5 +1,8 @@
 package lych.worldmodifiers.modifier;
 
+import lych.worldmodifiers.modifier.category.Modifier;
+
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -18,6 +21,6 @@ public final class NameToModifierMap {
     }
 
     public static Map<String, Modifier<?>> viewAll() {
-        return Map.copyOf(NAME_TO_MODIFIER_MAP);
+        return Collections.unmodifiableMap(NAME_TO_MODIFIER_MAP);
     }
 }

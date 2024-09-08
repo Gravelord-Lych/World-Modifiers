@@ -1,4 +1,19 @@
 {
-  "selectWorld.extremeDifficulty": "Extreme Difficulty",
-  "selectWorld.extremeDifficulty.info": "Hostile mobs spawn and deal even more damage. The depletion of hunger bar brings deadlier effects."
+  "modifier.worldmodifiers.max_health": "Max Health",
+  "modifier.worldmodifiers.movement_speed": "Movement Speed",
+  "modifierCategory.worldmodifiers.base": "Default Modifiers",
+  "modifierCategory.worldmodifiers.creature": "Friendly Mob",
+  "modifierCategory.worldmodifiers.entity": "Entity",
+  "modifierCategory.worldmodifiers.living_entity": "Mob",
+  "modifierCategory.worldmodifiers.mob": "Non-player Mob",
+  "modifierCategory.worldmodifiers.monster": "Hostile Mob",
+  "modifierCategory.worldmodifiers.player": "Player",
+  "worldmodifiers.editModifier.default": "Default: %s",
+  "worldmodifiers.editModifier.title": "Edit Modifiers",
+  "worldmodifiers.narrator.button.fold": "Fold Modifiers",
+  "worldmodifiers.narrator.button.fold.folded": "Folded",
+  "worldmodifiers.narrator.button.fold.unfolded": "Unfolded",
+  "worldmodifiers.selectWorld.extremeDifficulty": "Extreme Difficulty",
+  "worldmodifiers.selectWorld.extremeDifficulty.info": "Hostile mobs spawn and deal even more damage. The depletion of the hunger bar brings deadlier effects.",
+  "worldmodifiers.selectWorld.modifiers": "Modifiers"
 }

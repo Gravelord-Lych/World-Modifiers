@@ -1,43 +1,48 @@
 package lych.worldmodifiers.modifier;
 
-import com.google.common.base.MoreObjects;
 import com.google.gson.JsonObject;
 import lych.worldmodifiers.WorldModifiersMod;
+import lych.worldmodifiers.client.screen.EditModifiersScreen;
+import lych.worldmodifiers.client.screen.entry.IntModifierEntry;
+import lych.worldmodifiers.client.screen.entry.ModifierEntry;
+import lych.worldmodifiers.modifier.category.AbstractModifier;
+import lych.worldmodifiers.modifier.category.ModifierCategory;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 
-import java.util.Objects;
+import java.util.List;
 
-public final class IntModifier implements Modifier<Integer> {
-    private final ResourceLocation name;
-    private final Component component;
+public final class IntModifier extends AbstractModifier<Integer> {
     private final int defaultValue;
     private final int minValue;
     private final int maxValue;
 
-    public IntModifier(String name, int defaultValue, int minValue, int maxValue) {
-        this(name, WorldModifiersMod.MODID, defaultValue, minValue, maxValue);
-    }
-
-    public IntModifier(String name, String id, int defaultValue, int minValue, int maxValue) {
-        this.name = ResourceLocation.fromNamespaceAndPath(id, name);
-        this.component = Component.translatable(Modifier.NAME + "." + id + "." + name);
+    private IntModifier(String id, String name, ModifierCategory parent, SortingPriority priority, int defaultValue, int minValue, int maxValue) {
+        super(id, name, parent, priority);
         this.defaultValue = defaultValue;
         this.minValue = minValue;
         this.maxValue = maxValue;
-        NameToModifierMap.put(this);
     }
 
-    @Override
-    public ResourceLocation getName() {
-        return name;
+    public static IntModifier create(String name, ModifierCategory parent, int defaultValue, int minValue, int maxValue) {
+        return create(WorldModifiersMod.MODID, name, parent, defaultValue, minValue, maxValue);
     }
 
-    @Override
-    public Component getDisplayName() {
-        return component;
+    public static IntModifier create(String id, String name, ModifierCategory parent, int defaultValue, int minValue, int maxValue) {
+        return create(id, name, parent, SortingPriority.NORMAL, defaultValue, minValue, maxValue);
+    }
+
+    public static IntModifier create(String name, ModifierCategory parent, SortingPriority priority, int defaultValue, int minValue, int maxValue) {
+        return create(WorldModifiersMod.MODID, name, parent, priority, defaultValue, minValue, maxValue);
+    }
+
+    public static IntModifier create(String id, String name, ModifierCategory parent, SortingPriority priority, int defaultValue, int minValue, int maxValue) {
+        IntModifier intModifier = new IntModifier(id, name, parent, priority, defaultValue, minValue, maxValue);
+        NameToModifierMap.put(intModifier);
+        parent.addChildModifier(intModifier);
+        return intModifier;
     }
 
     @Override
@@ -86,23 +91,7 @@ public final class IntModifier implements Modifier<Integer> {
     }
 
     @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("name", name)
-                .add("defaultValue", defaultValue)
-                .toString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        IntModifier that = (IntModifier) o;
-        return defaultValue == that.defaultValue && Objects.equals(getName(), that.getName());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getName(), getDefaultValue());
+    public ModifierEntry createEntry(EditModifiersScreen screen, ModifierMap modifierMap, Component label, List<FormattedCharSequence> tooltip, int entryDepth, String name, Integer value) {
+        return new IntModifierEntry(screen, modifierMap, label, tooltip, entryDepth, name, this, value);
     }
 }

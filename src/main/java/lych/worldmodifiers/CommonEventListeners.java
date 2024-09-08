@@ -26,7 +26,7 @@ public final class CommonEventListeners {
 
     @SubscribeEvent
     public static void onLevelTick(LevelTickEvent.Post event) {
-        debugExtremeDifficulty(event);
+//        debugExtremeDifficulty(event);
     }
 
     private static void debugExtremeDifficulty(LevelTickEvent.Post event) {

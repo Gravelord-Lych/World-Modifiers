@@ -1,38 +1,42 @@
 package lych.worldmodifiers.modifier;
 
-import com.google.common.base.MoreObjects;
 import com.google.gson.JsonObject;
 import lych.worldmodifiers.WorldModifiersMod;
+import lych.worldmodifiers.client.screen.EditModifiersScreen;
+import lych.worldmodifiers.client.screen.entry.BooleanModifierEntry;
+import lych.worldmodifiers.client.screen.entry.ModifierEntry;
+import lych.worldmodifiers.modifier.category.AbstractModifier;
+import lych.worldmodifiers.modifier.category.ModifierCategory;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 
-import java.util.Objects;
+import java.util.List;
 
-public final class BooleanModifier implements Modifier<Boolean> {
-    private final ResourceLocation name;
-    private final Component component;
+public final class BooleanModifier extends AbstractModifier<Boolean> {
     private final boolean defaultValue;
 
-    public BooleanModifier(String name, boolean defaultValue) {
-        this(name, WorldModifiersMod.MODID, defaultValue);
-    }
-
-    public BooleanModifier(String name, String id, boolean defaultValue) {
-        this.name = ResourceLocation.fromNamespaceAndPath(id, name);
-        this.component = Component.translatable(Modifier.NAME + "." + id + "." + name);
+    private BooleanModifier(String id, String name, ModifierCategory parent, SortingPriority priority, boolean defaultValue) {
+        super(id, name, parent, priority);
         this.defaultValue = defaultValue;
-        NameToModifierMap.put(this);
     }
 
-    @Override
-    public ResourceLocation getName() {
-        return name;
+    public static BooleanModifier create(String name, ModifierCategory parent, boolean defaultValue) {
+        return create(WorldModifiersMod.MODID, name, parent, defaultValue);
     }
 
-    @Override
-    public Component getDisplayName() {
-        return component;
+    public static BooleanModifier create(String id, String name, ModifierCategory parent, boolean defaultValue) {
+        return create(id, name, parent, SortingPriority.NORMAL, defaultValue);
+    }
+
+    public static BooleanModifier create(String name, ModifierCategory parent, SortingPriority priority, boolean defaultValue) {
+        return create(WorldModifiersMod.MODID, name, parent, priority, defaultValue);
+    }
+
+    public static BooleanModifier create(String id, String name, ModifierCategory parent, SortingPriority priority, boolean defaultValue) {
+        BooleanModifier booleanModifier = new BooleanModifier(id, name, parent, priority, defaultValue);
+        NameToModifierMap.put(booleanModifier);
+        return booleanModifier;
     }
 
     @Override
@@ -61,23 +65,7 @@ public final class BooleanModifier implements Modifier<Boolean> {
     }
 
     @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("name", name)
-                .add("defaultValue", defaultValue)
-                .toString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BooleanModifier that = (BooleanModifier) o;
-        return defaultValue == that.defaultValue && Objects.equals(getName(), that.getName());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getName(), getDefaultValue());
+    public ModifierEntry createEntry(EditModifiersScreen screen, ModifierMap modifierMap, Component label, List<FormattedCharSequence> tooltip, int entryDepth, String name, Boolean value) {
+        return new BooleanModifierEntry(screen, modifierMap, label, tooltip, entryDepth, name, this, value);
     }
 }

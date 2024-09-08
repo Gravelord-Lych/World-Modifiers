@@ -4,10 +4,10 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.serialization.Dynamic;
-import lych.worldmodifiers.util.DifficultyHelper;
 import lych.worldmodifiers.WorldModifiersMod;
 import lych.worldmodifiers.mixin.ConfirmScreenAccessor;
-import lych.worldmodifiers.util.mixin.ICreateWorldScreenMixin;
+import lych.worldmodifiers.modifier.StoredModifiers;
+import lych.worldmodifiers.util.DifficultyHelper;
 import lych.worldmodifiers.util.mixin.IWorldCreationUiStateMixin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ConfirmScreen;
@@ -37,7 +37,7 @@ public class WorldListEntryMixin {
     private CreateWorldScreen worldModifier$handleAdditionalDataWhenRecreatingWorld(Minecraft minecraft, Screen lastScreen, LevelSettings levelSettings, WorldCreationContext settings, Path tempDataPackDir, Operation<CreateWorldScreen> original, @Local LevelStorageSource.LevelStorageAccess access) {
         CreateWorldScreen screen = original.call(minecraft, lastScreen, levelSettings, settings, tempDataPackDir);
         try {
-            worldModifiers$readAdditionalData(access.getDataTag(), (ICreateWorldScreenMixin) screen);
+            worldModifiers$readAdditionalData(access, access.getDataTag(), screen);
         } catch (Exception e) {
             WorldModifiersMod.LOGGER.warn("Unable to read additional data when recreating world", e);
         }
@@ -71,7 +71,7 @@ public class WorldListEntryMixin {
             if (ok) {
                 CreateWorldScreen createWorldScreen = CreateWorldScreen.createFromExisting(minecraft, screen, settings, context, path);
 
-                worldModifiers$readAdditionalData(finalDataTag, (ICreateWorldScreenMixin) createWorldScreen);
+                worldModifiers$readAdditionalData(access, finalDataTag, createWorldScreen);
                 minecraft.setScreen(createWorldScreen);
             } else {
                 minecraft.setScreen(screen);
@@ -80,8 +80,11 @@ public class WorldListEntryMixin {
     }
 
     @Unique
-    private static void worldModifiers$readAdditionalData(Dynamic<?> tag, ICreateWorldScreenMixin screen) {
-        ((IWorldCreationUiStateMixin) screen.worldModifiers$getUiState())
+    private static void worldModifiers$readAdditionalData(LevelStorageSource.LevelStorageAccess access, Dynamic<?> tag, CreateWorldScreen screen) {
+        ((IWorldCreationUiStateMixin) screen.getUiState())
                 .worldModifiers$setExtremeDifficulty(tag.get(DifficultyHelper.EXTREME_DIFFICULTY_TAG).asBoolean(false));
+        StoredModifiers storedModifiers = new StoredModifiers(access.getLevelPath(StoredModifiers.MODIFIERS).toFile());
+        storedModifiers.load();
+        ((IWorldCreationUiStateMixin) screen.getUiState()).worldModifiers$setModifierMap(storedModifiers.getModifierMap());
     }
 }
