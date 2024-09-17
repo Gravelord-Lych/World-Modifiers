@@ -1,13 +1,13 @@
 package lych.worldmodifiers.modifier;
 
+import lych.worldmodifiers.api.modifier.BaseModifier;
+import lych.worldmodifiers.api.modifier.Modifier;
 import lych.worldmodifiers.modifier.category.BaseModifierCategory;
-import lych.worldmodifiers.modifier.category.Modifier;
-import lych.worldmodifiers.modifier.category.ModifierCategory;
-import lych.worldmodifiers.modifier.category.ModifierSetEntry;
+import lych.worldmodifiers.api.modifier.category.ModifierCategory;
 
 import javax.annotation.Nullable;
 
-public final class ModifierVisitor implements ModifierEntryVisitor<ModifierSetEntry> {
+public final class ModifierVisitor implements ModifierEntryVisitor<BaseModifier> {
     private final ModifierEntryVisitor<? super ModifierCategory> categoryVisitor;
     private final ModifierEntryVisitor<? super Modifier<?>> modifierVisitor;
 
@@ -17,7 +17,7 @@ public final class ModifierVisitor implements ModifierEntryVisitor<ModifierSetEn
         this.modifierVisitor = modifierVisitor;
     }
 
-    public static ModifierVisitor of(ModifierEntryVisitor<? super ModifierSetEntry> visitor) {
+    public static ModifierVisitor of(ModifierEntryVisitor<? super BaseModifier> visitor) {
         return new ModifierVisitor(visitor, visitor);
     }
 
@@ -36,12 +36,12 @@ public final class ModifierVisitor implements ModifierEntryVisitor<ModifierSetEn
     /**
      * Recursively visits all modifier categories.
      */
-    private void recursivelyVisit(int depth, @Nullable ModifierCategory parent, ModifierSetEntry entry) {
+    private void recursivelyVisit(int depth, @Nullable ModifierCategory parent, BaseModifier entry) {
         boolean visitChildren = visitEntry(depth, parent, entry);
         if (!visitChildren) {
             return;
         }
-        for (ModifierSetEntry child : entry.getChildren()) {
+        for (BaseModifier child : entry.getChildren()) {
             if (!(entry instanceof ModifierCategory category)) {
                 throw new AssertionError("Only modifier category can have children, found: " + entry.getClass().getSimpleName());
             }
@@ -50,7 +50,7 @@ public final class ModifierVisitor implements ModifierEntryVisitor<ModifierSetEn
     }
 
     @Override
-    public boolean visitEntry(int depth, @Nullable ModifierCategory parent, ModifierSetEntry entry) {
+    public boolean visitEntry(int depth, @Nullable ModifierCategory parent, BaseModifier entry) {
         if (entry instanceof ModifierCategory category) {
             return categoryVisitor.visitEntry(depth, parent, category);
         } else if (entry instanceof Modifier<?> modifier) {

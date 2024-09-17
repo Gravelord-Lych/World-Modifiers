@@ -1,10 +1,10 @@
 package lych.worldmodifiers.network;
 
 import com.mojang.logging.LogUtils;
-import lych.worldmodifiers.modifier.category.Modifier;
+import lych.worldmodifiers.api.modifier.Modifier;
 import lych.worldmodifiers.modifier.ModifierMap;
 import lych.worldmodifiers.modifier.NameToModifierMap;
-import lych.worldmodifiers.util.ModifiersHelper;
+import lych.worldmodifiers.util.ModifierHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -17,8 +17,8 @@ import org.slf4j.Logger;
 
 import java.util.Optional;
 
-public final class ModifiersNetwork {
-    private ModifiersNetwork() {}
+public final class ModifierNetwork {
+    private ModifierNetwork() {}
 
     public static <T> void sendModifierEntryToServer(Modifier<T> modifier, T value) {
         PacketDistributor.sendToServer(new EntryPacket(modifier, value));
@@ -50,9 +50,9 @@ public final class ModifiersNetwork {
             context.enqueueWork(() -> {
                 Level level = context.player().level();
                 if (level.isClientSide()) {
-                    ModifiersHelper.reloadModifiersClientside(level, data.map());
+                    ModifierHelper.reloadModifiersClientside(level, data.map());
                 } else {
-                    ModifiersHelper.reloadModifiersServerside(level.getServer(), data.map());
+                    ModifierHelper.reloadModifiersServerside(level.getServer(), data.map());
                 }
                 LOGGER.debug("Received modifier map packet with value {}", data.map());
             }).exceptionally(e -> {
@@ -79,12 +79,12 @@ public final class ModifiersNetwork {
 
         @SuppressWarnings("unchecked")
         private static <T> void forceSyncModifierValueClientside(Level level, Modifier<T> modifier, Object value) {
-            ModifiersHelper.syncModifierValueClientside(level, modifier, (T) value);
+            ModifierHelper.syncModifierValueClientside(level, modifier, (T) value);
         }
 
         @SuppressWarnings("unchecked")
         private static <T> void forceSyncModifierValueServerside(MinecraftServer server, Modifier<T> modifier, Object value) {
-            ModifiersHelper.syncModifierValueServerside(server, modifier, (T) value);
+            ModifierHelper.syncModifierValueServerside(server, modifier, (T) value);
         }
     }
 
@@ -118,7 +118,7 @@ public final class ModifiersNetwork {
 
         public static EntryPacket read(FriendlyByteBuf buf) {
             String name = buf.readUtf();
-            Optional<Modifier<?>> modifierOptional = NameToModifierMap.byName(name);
+            Optional<Modifier<?>> modifierOptional = NameToModifierMap.byFullName(name);
             if (modifierOptional.isEmpty()) {
                 throw new IllegalStateException("Modifier %s not found".formatted(name));
             }
@@ -129,7 +129,7 @@ public final class ModifiersNetwork {
 
         @SuppressWarnings("unchecked")
         public static <T> void forceWrite(FriendlyByteBuf buf, Modifier<T> modifier, Object value) {
-            buf.writeUtf(modifier.getName().toString());
+            buf.writeUtf(modifier.getFullName().toString());
             modifier.serializeToNetwork((T) value, buf);
         }
 

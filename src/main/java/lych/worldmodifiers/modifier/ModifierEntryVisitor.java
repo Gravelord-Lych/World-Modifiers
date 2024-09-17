@@ -1,6 +1,6 @@
 package lych.worldmodifiers.modifier;
 
-import lych.worldmodifiers.modifier.category.ModifierCategory;
+import lych.worldmodifiers.api.modifier.category.ModifierCategory;
 
 import javax.annotation.Nullable;
 

@@ -1,6 +1,6 @@
-package lych.worldmodifiers.client.gui.component;
+package lych.worldmodifiers.client.gui.widget;
 
-import lych.worldmodifiers.WorldModifiersMod;
+import lych.worldmodifiers.util.MessageUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.CommonComponents;
@@ -8,11 +8,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 
+import static lych.worldmodifiers.api.client.screen.ModifierScreenConstants.*;
+
 public class FoldButton extends Button {
-    public static final Component FOLD = WorldModifiersMod.prefixMsg("narrator.button.fold");
-    public static final Component FOLDED = WorldModifiersMod.prefixMsg("narrator.button.fold.folded");
-    public static final Component UNFOLDED = WorldModifiersMod.prefixMsg("narrator.button.fold.unfolded");
-    private static final ResourceLocation FOLD_BUTTON = WorldModifiersMod.prefixTex("gui/fold_button.png");
+    public static final Component FOLD = MessageUtils.prefixMsg("narrator.button.fold");
+    public static final Component FOLDED = MessageUtils.prefixMsg("narrator.button.fold.folded");
+    public static final Component UNFOLDED = MessageUtils.prefixMsg("narrator.button.fold.unfolded");
+    private static final ResourceLocation FOLD_BUTTON = MessageUtils.prefixTex("gui/fold_button.png");
     private boolean folded;
 
     public FoldButton(int x, int y, OnPress onPress) {
@@ -45,9 +47,9 @@ public class FoldButton extends Button {
 
     private enum Icon {
         FOLDED(0, 0, 0, 0),
-        FOLDED_HOVER(0, 24, 0, 0),
-        UNFOLDED(24, 0, -6, 4),
-        UNFOLDED_HOVER(24, 24, -6, 4);
+        FOLDED_HOVER(0, FOLD_ICON_SIZE, 0, 0),
+        UNFOLDED(FOLD_ICON_SIZE, 0, UNFOLDED_FOLD_ICON_X_OFFSET, UNFOLDED_FOLD_ICON_Y_OFFSET),
+        UNFOLDED_HOVER(FOLD_ICON_SIZE, FOLD_ICON_SIZE, UNFOLDED_FOLD_ICON_X_OFFSET, UNFOLDED_FOLD_ICON_Y_OFFSET);
 
         private final int u;
         private final int v;

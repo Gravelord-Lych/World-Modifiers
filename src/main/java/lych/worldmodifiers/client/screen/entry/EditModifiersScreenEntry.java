@@ -10,16 +10,19 @@ import net.minecraft.util.FormattedCharSequence;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class BaseEntry extends ContainerObjectSelectionList.Entry<BaseEntry> {
-    protected static final int DEPTH_OFFSET = 10;
+public abstract class EditModifiersScreenEntry extends ContainerObjectSelectionList.Entry<EditModifiersScreenEntry> {
     @Nullable
     private final List<FormattedCharSequence> tooltip;
     protected final List<AbstractWidget> children = Lists.newArrayList();
     protected final int entryDepth;
 
-    public BaseEntry(@Nullable List<FormattedCharSequence> tooltip, int entryDepth) {
+    public EditModifiersScreenEntry(@Nullable List<FormattedCharSequence> tooltip, int entryDepth) {
         this.tooltip = tooltip;
         this.entryDepth = entryDepth;
+    }
+
+    public boolean mouseHovered(int mouseX, int mouseY) {
+        return true;
     }
 
     @Override

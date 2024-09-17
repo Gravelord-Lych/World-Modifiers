@@ -1,6 +1,7 @@
 package lych.worldmodifiers.modifier.category;
 
-import lych.worldmodifiers.modifier.SortingPriority;
+import lych.worldmodifiers.api.modifier.category.ModifierCategory;
+import lych.worldmodifiers.api.modifier.SortingPriority;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -22,6 +23,6 @@ public final class SubModifierCategory extends AbstractModifierCategory {
 
     @Override
     public String toString() {
-        return "ModifierCategory[%s, parent=%s]".formatted(getName(), getParent().getName());
+        return "ModifierCategory[%s, parent=%s]".formatted(getFullName(), getParent().getFullName());
     }
 }

@@ -1,6 +1,7 @@
 package lych.worldmodifiers.network;
 
 import lych.worldmodifiers.WorldModifiersMod;
+import lych.worldmodifiers.util.MessageUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -17,23 +18,23 @@ public final class ModNetworking {
         registrar.playBidirectional(ExtremeDifficultyNetwork.Packet.TYPE,
                 ExtremeDifficultyNetwork.Packet.STREAM_CODEC,
                 ExtremeDifficultyNetwork.PayloadHandler.INSTANCE::handleData);
-        registrar.playBidirectional(ModifiersNetwork.MapPacket.TYPE,
-                ModifiersNetwork.MapPacket.STREAM_CODEC,
-                ModifiersNetwork.PayLoadHandler.INSTANCE::handleMapData);
-        registrar.playBidirectional(ModifiersNetwork.EntryPacket.TYPE,
-                ModifiersNetwork.EntryPacket.STREAM_CODEC,
-                ModifiersNetwork.PayLoadHandler.INSTANCE::handleEntryData);
+        registrar.playBidirectional(ModifierNetwork.MapPacket.TYPE,
+                ModifierNetwork.MapPacket.STREAM_CODEC,
+                ModifierNetwork.PayLoadHandler.INSTANCE::handleMapData);
+        registrar.playBidirectional(ModifierNetwork.EntryPacket.TYPE,
+                ModifierNetwork.EntryPacket.STREAM_CODEC,
+                ModifierNetwork.PayLoadHandler.INSTANCE::handleEntryData);
     }
 
     public static ResourceLocation bidirectional(String name) {
-        return WorldModifiersMod.prefix(name);
+        return MessageUtils.prefix(name);
     }
 
     public static ResourceLocation clientbound(String name) {
-        return WorldModifiersMod.prefix(name + "_clientbound");
+        return MessageUtils.prefix(name + "_clientbound");
     }
 
     public static ResourceLocation serverbound(String name) {
-        return WorldModifiersMod.prefix(name + "_serverbound");
+        return MessageUtils.prefix(name + "_serverbound");
     }
 }

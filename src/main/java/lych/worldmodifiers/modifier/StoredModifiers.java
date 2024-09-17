@@ -4,7 +4,7 @@ import com.google.common.io.Files;
 import com.google.gson.*;
 import com.mojang.logging.LogUtils;
 import lych.worldmodifiers.WorldModifiersMod;
-import lych.worldmodifiers.modifier.category.Modifier;
+import lych.worldmodifiers.api.modifier.Modifier;
 import net.minecraft.world.level.storage.LevelResource;
 import org.slf4j.Logger;
 

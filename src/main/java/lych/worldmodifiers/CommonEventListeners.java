@@ -1,7 +1,8 @@
 package lych.worldmodifiers;
 
+import lych.worldmodifiers.modifier.ModifierApplier;
 import lych.worldmodifiers.network.ExtremeDifficultyNetwork;
-import lych.worldmodifiers.network.ModifiersNetwork;
+import lych.worldmodifiers.network.ModifierNetwork;
 import lych.worldmodifiers.util.DifficultyHelper;
 import lych.worldmodifiers.util.IDedicatedServerPropertiesMixin;
 import lych.worldmodifiers.util.mixin.IAdditionalLevelData;
@@ -11,10 +12,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
@@ -33,6 +36,14 @@ public final class CommonEventListeners {
         if (!event.getLevel().isClientSide() && DifficultyHelper.isExtremeDifficulty(event.getLevel()) && !event.getLevel().players().isEmpty()) {
 //            WorldModifiers.LOGGER.info("Level ticked on server side with extreme difficulty!");
             event.getLevel().players().getFirst().addEffect(new MobEffectInstance(MobEffects.GLOWING, 20));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEntityJoinLevel(EntityJoinLevelEvent event) {
+        if (event.getEntity() instanceof Mob mob && !event.getLevel().isClientSide() && !event.loadedFromDisk()) {
+            ModifierApplier.applyMaxHealth(mob);
+            ModifierApplier.applyMovementSpeed(mob);
         }
     }
 
@@ -72,7 +83,7 @@ public final class CommonEventListeners {
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         ServerPlayer player = (ServerPlayer) event.getEntity();
         ExtremeDifficultyNetwork.sendDifficultyToClient(DifficultyHelper.isExtremeDifficultyInData(player.level().getLevelData()));
-        ModifiersNetwork.sendModifierMapToClient(player,
+        ModifierNetwork.sendModifierMapToClient(player,
                 ((IMinecraftServerMixin) player.getServer()).worldModifiers$getStoredModifiers().getModifierMap());
     }
 }

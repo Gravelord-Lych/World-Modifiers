@@ -2,7 +2,7 @@ package lych.worldmodifiers.util.mixin;
 
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import lych.worldmodifiers.modifier.ModifierMap;
-import lych.worldmodifiers.modifier.category.ModifierCategory;
+import lych.worldmodifiers.api.modifier.category.ModifierCategory;
 
 public interface IWorldCreationUiStateMixin {
     boolean worldModifiers$isExtremeDifficulty();

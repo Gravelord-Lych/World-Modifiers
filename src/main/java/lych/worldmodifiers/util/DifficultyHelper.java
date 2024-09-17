@@ -1,6 +1,5 @@
 package lych.worldmodifiers.util;
 
-import lych.worldmodifiers.WorldModifiersMod;
 import lych.worldmodifiers.enchantment.provider.ModEnchantmentProviders;
 import lych.worldmodifiers.network.ExtremeDifficultyNetwork;
 import lych.worldmodifiers.util.mixin.IAdditionalLevelData;
@@ -19,8 +18,8 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.storage.LevelData;
 
 public final class DifficultyHelper {
-    public static final Component EXTREME_DIFFICULTY = WorldModifiersMod.prefixMsg("selectWorld.extremeDifficulty");
-    public static final Component EXTREME_DIFFICULTY_INFO = WorldModifiersMod.prefixMsg("selectWorld.extremeDifficulty.info");
+    public static final Component EXTREME_DIFFICULTY = MessageUtils.prefixMsg("selectWorld.extremeDifficulty");
+    public static final Component EXTREME_DIFFICULTY_INFO = MessageUtils.prefixMsg("selectWorld.extremeDifficulty.info");
     public static final String EXTREME_DIFFICULTY_TAG = "ExtremeDifficulty";
     public static final double OPTION_SCREEN_HEAD_HEIGHT_MULTIPLIER = 1.35;
     public static final float EXTREME_DIFFICULTY_DAMAGE_SCALING_FROM_NORMAL = 2.0F;

@@ -1,23 +1,28 @@
 package lych.worldmodifiers.util;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import lych.worldmodifiers.WorldModifiersMod;
-import lych.worldmodifiers.modifier.category.Modifier;
+import lych.worldmodifiers.api.client.screen.entry.ModifierEntry;
+import lych.worldmodifiers.api.modifier.Modifier;
+import lych.worldmodifiers.client.screen.EditModifiersScreen;
+import lych.worldmodifiers.client.screen.entry.ModifierEntryContext;
 import lych.worldmodifiers.modifier.ModifierMap;
 import lych.worldmodifiers.modifier.StoredModifiers;
-import lych.worldmodifiers.network.ModifiersNetwork;
+import lych.worldmodifiers.network.ModifierNetwork;
 import lych.worldmodifiers.util.mixin.IAdditionalClientLevelData;
 import lych.worldmodifiers.util.mixin.IMinecraftServerMixin;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.level.LevelAccessor;
 
+import java.lang.reflect.Constructor;
+import java.util.List;
 import java.util.Objects;
 
-public final class ModifiersHelper {
-    public static final Component MODIFIERS = WorldModifiersMod.prefixMsg("selectWorld.modifiers");
+public final class ModifierHelper {
+    public static final Component MODIFIERS = MessageUtils.prefixMsg("selectWorld.modifiers");
 
-    private ModifiersHelper() {}
+    private ModifierHelper() {}
 
     public static <T> T getModifierValue(LevelAccessor level, Modifier<T> modifier) {
         if (level.isClientSide()) {
@@ -36,13 +41,18 @@ public final class ModifiersHelper {
         if (level.isClientSide()) {
             ModifierMap map = ((IAdditionalClientLevelData) level.getLevelData()).worldModifiers$getSynchedModifiers();
             oldValue = map.setModifierValue(modifier, value);
-            ModifiersNetwork.sendModifierEntryToServer(modifier, value);
+            ModifierNetwork.sendModifierEntryToServer(modifier, value);
         } else {
-            @SuppressWarnings("DataFlowIssue")
-            StoredModifiers storedModifiers = ((IMinecraftServerMixin) level.getServer()).worldModifiers$getStoredModifiers();
-            oldValue = storedModifiers.setModifierValue(modifier, value);
-            ModifiersNetwork.sendModifierEntryToClient(modifier, value);
+            oldValue = ModifierHelper.setModifierValue(Objects.requireNonNull(level.getServer()), modifier, value);
         }
+        return oldValue;
+    }
+
+    @CanIgnoreReturnValue
+    public static <T> T setModifierValue(MinecraftServer server, Modifier<T> modifier, T value) {
+        StoredModifiers storedModifiers = ((IMinecraftServerMixin) server).worldModifiers$getStoredModifiers();
+        T oldValue = storedModifiers.setModifierValue(modifier, value);
+        ModifierNetwork.sendModifierEntryToClient(modifier, value);
         return oldValue;
     }
 
@@ -50,12 +60,12 @@ public final class ModifiersHelper {
         if (level.isClientSide()) {
             ModifierMap oldMap = ((IAdditionalClientLevelData) level.getLevelData()).worldModifiers$getSynchedModifiers();
             oldMap.reloadFrom(map);
-            ModifiersNetwork.sendModifierMapToServer(map);
+            ModifierNetwork.sendModifierMapToServer(map);
         } else {
             @SuppressWarnings("DataFlowIssue")
             StoredModifiers storedModifiers = ((IMinecraftServerMixin) level.getServer()).worldModifiers$getStoredModifiers();
             storedModifiers.reloadModifiersFrom(map);
-            ModifiersNetwork.sendModifierMapToClient(map);
+            ModifierNetwork.sendModifierMapToClient(map);
         }
     }
 
@@ -82,4 +92,28 @@ public final class ModifiersHelper {
         Objects.requireNonNull(server, "MinecraftServer cannot be null");
         ((IMinecraftServerMixin) server).worldModifiers$getStoredModifiers().setModifierValue(modifier, value);
     }
-}
+
+    public static <T, E extends ModifierEntry<T>> E createEntry(Class<E> entryClass,
+                                                             Class<T> valueClass,
+                                                             EditModifiersScreen editModifiersScreen,
+                                                             ModifierMap modifierMap,
+                                                             Component displayName,
+                                                             List<FormattedCharSequence> tooltip,
+                                                             int depth,
+                                                             String defaultValueText,
+                                                             Modifier<T> modifier,
+                                                             T value) {
+        Constructor<E> constructor;
+        try {
+            constructor = entryClass.getConstructor(ModifierEntryContext.class, valueClass);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException("Missing constructor for entry class %s".formatted(entryClass.getSimpleName()), e);
+        }
+        E entry;
+        try {
+            entry = constructor.newInstance(new ModifierEntryContext<>(editModifiersScreen, modifierMap, displayName, tooltip, depth, defaultValueText, modifier), value);
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalArgumentException("Failed to create entry for class %s".formatted(entryClass.getSimpleName()), e);
+        }
+        return entry;
+    }}

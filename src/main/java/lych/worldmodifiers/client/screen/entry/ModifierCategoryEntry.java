@@ -1,9 +1,9 @@
 package lych.worldmodifiers.client.screen.entry;
 
 import com.google.common.collect.ImmutableList;
-import lych.worldmodifiers.client.gui.component.FoldButton;
+import lych.worldmodifiers.api.modifier.category.ModifierCategory;
+import lych.worldmodifiers.client.gui.widget.FoldButton;
 import lych.worldmodifiers.client.screen.EditModifiersScreen;
-import lych.worldmodifiers.modifier.category.ModifierCategory;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarratedElementType;
@@ -13,10 +13,10 @@ import net.minecraft.network.chat.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ModifierCategoryEntry extends BaseEntry {
-    protected static final int TOP_OFFSET = 8;
-    protected static final int ICON_OFFSET = 18;
-    private final List<BaseEntry> subEntries = new ArrayList<>();
+import static lych.worldmodifiers.api.client.screen.ModifierScreenConstants.*;
+
+public class ModifierCategoryEntry extends EditModifiersScreenEntry {
+    private final List<EditModifiersScreenEntry> subEntries = new ArrayList<>();
     private final EditModifiersScreen editModifiersScreen;
     private final ModifierList modifierList;
     private final ModifierCategory category;
@@ -56,10 +56,14 @@ public class ModifierCategoryEntry extends BaseEntry {
             boolean hovering,
             float partialTick
     ) {
-        foldButton.setX(left + entryDepth * DEPTH_OFFSET);
+        foldButton.setX(left + entryDepth * DEPTH_X_OFFSET);
         foldButton.setY(top);
         foldButton.render(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.drawString(editModifiersScreen.getMinecraft().font, label, left + ICON_OFFSET + entryDepth * DEPTH_OFFSET, top + TOP_OFFSET, -1);
+        guiGraphics.drawString(editModifiersScreen.getMinecraft().font,
+                label,
+                left + CATEGORY_ENTRY_ICON_OFFSET + entryDepth * DEPTH_X_OFFSET,
+                top + CATEGORY_ENTRY_TOP_OFFSET,
+                -1);
     }
 
     @Override
@@ -81,7 +85,7 @@ public class ModifierCategoryEntry extends BaseEntry {
         return category;
     }
 
-    public void addSubEntry(BaseEntry entry) {
+    public void addSubEntry(EditModifiersScreenEntry entry) {
         subEntries.add(entry);
     }
 
@@ -107,7 +111,7 @@ public class ModifierCategoryEntry extends BaseEntry {
     }
 
     private void recursivelyRemoveChildren() {
-        for (BaseEntry entry : subEntries) {
+        for (EditModifiersScreenEntry entry : subEntries) {
             if (entry instanceof ModifierCategoryEntry) {
                 ((ModifierCategoryEntry) entry).recursivelyRemoveChildren();
             }
@@ -116,7 +120,7 @@ public class ModifierCategoryEntry extends BaseEntry {
     }
 
     private int recursivelyAddChildren(int index) {
-        for (BaseEntry entry : subEntries) {
+        for (EditModifiersScreenEntry entry : subEntries) {
             modifierList.children().add(index, entry);
             if (entry instanceof ModifierCategoryEntry categoryEntry && !categoryEntry.isFolded()) {
                 index = categoryEntry.recursivelyAddChildren(modifierList.children().indexOf(entry) + 1);

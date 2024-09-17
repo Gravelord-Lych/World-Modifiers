@@ -3,7 +3,7 @@ package lych.worldmodifiers.mixin.client;
 import it.unimi.dsi.fastutil.objects.Object2BooleanArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import lych.worldmodifiers.modifier.ModifierMap;
-import lych.worldmodifiers.modifier.category.ModifierCategory;
+import lych.worldmodifiers.api.modifier.category.ModifierCategory;
 import lych.worldmodifiers.util.mixin.IWorldCreationUiStateMixin;
 import net.minecraft.client.gui.screens.worldselection.WorldCreationUiState;
 import net.minecraft.world.Difficulty;

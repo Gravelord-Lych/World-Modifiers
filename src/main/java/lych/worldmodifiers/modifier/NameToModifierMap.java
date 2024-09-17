@@ -1,6 +1,6 @@
 package lych.worldmodifiers.modifier;
 
-import lych.worldmodifiers.modifier.category.Modifier;
+import lych.worldmodifiers.api.modifier.Modifier;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,10 +13,10 @@ public final class NameToModifierMap {
     private NameToModifierMap() {}
 
     public static void put(Modifier<?> modifier) {
-        NAME_TO_MODIFIER_MAP.put(modifier.getName().toString(), modifier);
+        NAME_TO_MODIFIER_MAP.put(modifier.getFullName().toString(), modifier);
     }
 
-    public static Optional<Modifier<?>> byName(String name) {
+    public static Optional<Modifier<?>> byFullName(String name) {
         return Optional.ofNullable(NAME_TO_MODIFIER_MAP.get(name));
     }
 

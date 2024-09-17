@@ -1,12 +1,13 @@
 package lych.worldmodifiers.modifier;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Streams;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
-import lych.worldmodifiers.modifier.category.Modifier;
+import lych.worldmodifiers.api.modifier.Modifier;
 import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import org.slf4j.Logger;
@@ -50,6 +51,23 @@ public class ModifierMap {
         setDirty(changed);
     }
 
+    public int difference(ModifierMap other) {
+        int diff = 0;
+        for (Map.Entry<String, Modifier<?>> entry : NameToModifierMap.viewAll().entrySet()) {
+            Object value = modifiers.get(entry.getValue());
+            Object otherValue = other.modifiers.get(entry.getValue());
+            if (!Objects.equals(value, otherValue)) {
+                diff++;
+            }
+        }
+        return diff;
+    }
+
+    @VisibleForTesting
+    public int size() {
+        return modifiers.size();
+    }
+
     @SuppressWarnings("unchecked")
     public <T> T getModifierValue(Modifier<T> modifier) {
         T value = (T) modifiers.get(modifier);
@@ -79,7 +97,7 @@ public class ModifierMap {
         }
         T sanitizedValue = modifier.sanitizeValue(value);
         if (!Objects.equals(value, sanitizedValue)) {
-            LOGGER.info("Sanitized value for modifier {}: {} -> {}", modifier.getName(), value, sanitizedValue);
+            LOGGER.info("Sanitized value for modifier {}: {} -> {}", modifier.getFullName(), value, sanitizedValue);
         }
         return sanitizedValue;
     }
@@ -102,7 +120,7 @@ public class ModifierMap {
                 return;
             }
             String modifierName = data.get(Modifier.NAME_PROPERTY).getAsString();
-            Optional<Modifier<?>> modifierOptional = NameToModifierMap.byName(modifierName);
+            Optional<Modifier<?>> modifierOptional = NameToModifierMap.byFullName(modifierName);
             if (modifierOptional.isEmpty()) {
                 warnUnknown(modifierName);
                 return;
@@ -120,7 +138,7 @@ public class ModifierMap {
     public void serializeToNetwork(FriendlyByteBuf buf) {
         buf.writeInt(modifiers.size());
         modifiers.forEach((modifier, value) -> {
-            buf.writeUtf(modifier.getName().toString());
+            buf.writeUtf(modifier.getFullName().toString());
             forceSerializeToNetwork(modifier, value, buf);
         });
     }
@@ -130,7 +148,7 @@ public class ModifierMap {
         int size = buf.readInt();
         for (int i = 0; i < size; i++) {
             String modifierName = buf.readUtf();
-            Optional<Modifier<?>> modifierOptional = NameToModifierMap.byName(modifierName);
+            Optional<Modifier<?>> modifierOptional = NameToModifierMap.byFullName(modifierName);
             if (modifierOptional.isEmpty()) {
                 warnUnknown(modifierName);
                 continue;
@@ -143,7 +161,7 @@ public class ModifierMap {
 
     @SuppressWarnings("unchecked")
     private <T> void forceSerializeToJson(Modifier<T> modifier, Object value, JsonObject data) {
-        data.addProperty(Modifier.NAME_PROPERTY, modifier.getName().toString());
+        data.addProperty(Modifier.NAME_PROPERTY, modifier.getFullName().toString());
         modifier.serializeToJson((T) value, data);
     }
 

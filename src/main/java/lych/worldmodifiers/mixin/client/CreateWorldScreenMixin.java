@@ -6,7 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanArrayMap;
 import lych.worldmodifiers.client.screen.EditModifiersScreen;
 import lych.worldmodifiers.modifier.StoredModifiers;
 import lych.worldmodifiers.util.DifficultyHelper;
-import lych.worldmodifiers.util.ModifiersHelper;
+import lych.worldmodifiers.util.ModifierHelper;
 import lych.worldmodifiers.util.mixin.IAdditionalLevelData;
 import lych.worldmodifiers.util.mixin.IWorldCreationUiStateMixin;
 import net.minecraft.client.Minecraft;
@@ -85,7 +85,7 @@ public class CreateWorldScreenMixin {
         private void worldModifiers$addModifiersButton(CreateWorldScreen this$0, CallbackInfo ci, @Local GridLayout.RowHelper rowHelper) {
             rowHelper.addChild(
                     Button.builder(
-                                    ModifiersHelper.MODIFIERS,
+                                    ModifierHelper.MODIFIERS,
                                     button -> worldModifiers$openModifiersScreen()
                             )
                             .width(210)
