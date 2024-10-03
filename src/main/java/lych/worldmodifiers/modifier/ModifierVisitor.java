@@ -7,23 +7,23 @@ import lych.worldmodifiers.api.modifier.category.ModifierCategory;
 
 import javax.annotation.Nullable;
 
-public final class ModifierVisitor implements ModifierEntryVisitor<BaseModifier> {
-    private final ModifierEntryVisitor<? super ModifierCategory> categoryVisitor;
-    private final ModifierEntryVisitor<? super Modifier<?>> modifierVisitor;
+public final class ModifierVisitor implements SingleModifierVisitor<BaseModifier> {
+    private final SingleModifierVisitor<? super ModifierCategory> categoryVisitor;
+    private final SingleModifierVisitor<? super Modifier<?>> modifierVisitor;
 
-    private ModifierVisitor(ModifierEntryVisitor<? super ModifierCategory> categoryVisitor,
-                            ModifierEntryVisitor<? super Modifier<?>> modifierVisitor) {
+    private ModifierVisitor(SingleModifierVisitor<? super ModifierCategory> categoryVisitor,
+                            SingleModifierVisitor<? super Modifier<?>> modifierVisitor) {
         this.categoryVisitor = categoryVisitor;
         this.modifierVisitor = modifierVisitor;
     }
 
-    public static ModifierVisitor of(ModifierEntryVisitor<? super BaseModifier> visitor) {
+    public static ModifierVisitor of(SingleModifierVisitor<? super BaseModifier> visitor) {
         return new ModifierVisitor(visitor, visitor);
     }
 
 
-    public static ModifierVisitor of(ModifierEntryVisitor<? super ModifierCategory> categoryVisitor,
-                                     ModifierEntryVisitor<? super Modifier<?>> modifierVisitor) {
+    public static ModifierVisitor of(SingleModifierVisitor<? super ModifierCategory> categoryVisitor,
+                                     SingleModifierVisitor<? super Modifier<?>> modifierVisitor) {
         return new ModifierVisitor(categoryVisitor, modifierVisitor);
     }
 
@@ -37,7 +37,7 @@ public final class ModifierVisitor implements ModifierEntryVisitor<BaseModifier>
      * Recursively visits all modifier categories.
      */
     private void recursivelyVisit(int depth, @Nullable ModifierCategory parent, BaseModifier entry) {
-        boolean visitChildren = visitEntry(depth, parent, entry);
+        boolean visitChildren = visit(depth, parent, entry);
         if (!visitChildren) {
             return;
         }
@@ -50,13 +50,13 @@ public final class ModifierVisitor implements ModifierEntryVisitor<BaseModifier>
     }
 
     @Override
-    public boolean visitEntry(int depth, @Nullable ModifierCategory parent, BaseModifier entry) {
-        if (entry instanceof ModifierCategory category) {
-            return categoryVisitor.visitEntry(depth, parent, category);
-        } else if (entry instanceof Modifier<?> modifier) {
-            return modifierVisitor.visitEntry(depth, parent, modifier);
+    public boolean visit(int depth, @Nullable ModifierCategory parent, BaseModifier baseModifier) {
+        if (baseModifier instanceof ModifierCategory category) {
+            return categoryVisitor.visit(depth, parent, category);
+        } else if (baseModifier instanceof Modifier<?> modifier) {
+            return modifierVisitor.visit(depth, parent, modifier);
         } else {
-            throw new AssertionError("Invalid entry type: " + entry.getClass().getSimpleName());
+            throw new AssertionError("Invalid entry type: " + baseModifier.getClass().getSimpleName());
         }
     }
 }

@@ -1,5 +1,8 @@
 package lych.worldmodifiers;
 
+import lych.worldmodifiers.api.event.WorldModifierEventHooks;
+import lych.worldmodifiers.attachment.PlayerModifiersData;
+import lych.worldmodifiers.attachment.ModAttachments;
 import lych.worldmodifiers.modifier.ModifierApplier;
 import lych.worldmodifiers.network.ExtremeDifficultyNetwork;
 import lych.worldmodifiers.network.ModifierNetwork;
@@ -41,10 +44,33 @@ public final class CommonEventListeners {
 
     @SubscribeEvent
     public static void onEntityJoinLevel(EntityJoinLevelEvent event) {
-        if (event.getEntity() instanceof Mob mob && !event.getLevel().isClientSide() && !event.loadedFromDisk()) {
-            ModifierApplier.applyMaxHealth(mob);
-            ModifierApplier.applyMovementSpeed(mob);
+        applyModifiers(event);
+    }
+
+    private static void applyModifiers(EntityJoinLevelEvent event) {
+        if (!event.getLevel().isClientSide() && !event.loadedFromDisk()) {
+            if (event.getEntity() instanceof Mob mob) {
+                ModifierApplier.applyMobArmor(mob);
+                ModifierApplier.applyMobMaxHealth(mob);
+                ModifierApplier.applyMobMovementSpeed(mob);
+                WorldModifierEventHooks.onApplyingModifiersToMobs(mob);
+            } else if (event.getEntity() instanceof Player player) {
+                if (applyModifiersToPlayer(player)) {
+                    WorldModifierEventHooks.onApplyingModifiersToPlayers(player);
+                }
+            }
         }
+    }
+
+    private static boolean applyModifiersToPlayer(Player player) {
+        PlayerModifiersData data = player.getData(ModAttachments.PLAYER_MODIFIERS_DATA);
+        if (data.appliedModifiers()) {
+            return false;
+        }
+        ModifierApplier.applyPlayerMaxHealth(player);
+        ModifierApplier.applyPlayerMovementSpeed(player);
+        data.setAppliedModifiers(true);
+        return true;
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -86,4 +112,7 @@ public final class CommonEventListeners {
         ModifierNetwork.sendModifierMapToClient(player,
                 ((IMinecraftServerMixin) player.getServer()).worldModifiers$getStoredModifiers().getModifierMap());
     }
+
+    @SubscribeEvent
+    public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {}
 }

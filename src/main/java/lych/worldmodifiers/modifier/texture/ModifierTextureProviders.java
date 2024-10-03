@@ -61,6 +61,18 @@ public final class ModifierTextureProviders {
                 .addTexture(mediumHighValue + 1, maxValue, createTextureLocation(name, GREATLY_INCREASED));
     }
 
+    public static RangedModifierTextureProviderBuilder<Integer> ranged5(int defaultValue, int minValue, int mediumLowValue, int mediumHighValue, int maxValue, String name) {
+        if (minValue >= defaultValue || mediumLowValue <= minValue || mediumHighValue <= mediumLowValue || maxValue <= mediumHighValue) {
+            throw new IllegalArgumentException("Invalid value range. The correct ordering of the 5 integer arguments is minValue < mediumLowValue < defaultValue < mediumHighValue < maxValue");
+        }
+        return ModifierTextureProviders.<Integer>ranged(createDefaultTextureLocation(name))
+                .addTexture(minValue, mediumLowValue, createTextureLocation(name, GREATLY_DECREASED))
+                .addTexture(mediumLowValue + 1, defaultValue - 1, createTextureLocation(name, DECREASED))
+                .addTexture(defaultValue, createDefaultTextureLocation(name))
+                .addTexture(defaultValue + 1, mediumHighValue, createTextureLocation(name, INCREASED))
+                .addTexture(mediumHighValue + 1, maxValue, createTextureLocation(name, GREATLY_INCREASED));
+    }
+
     public static ResourceLocation createDefaultTextureLocation(String name) {
         return createTextureLocation(name, "");
     }

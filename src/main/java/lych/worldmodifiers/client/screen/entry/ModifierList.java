@@ -3,7 +3,7 @@ package lych.worldmodifiers.client.screen.entry;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import lych.worldmodifiers.WorldModifiersMod;
-import lych.worldmodifiers.api.client.screen.ModifierScreenConstants;
+import lych.worldmodifiers.api.client.screen.ScreenConstants;
 import lych.worldmodifiers.api.client.screen.entry.ModifierEntry;
 import lych.worldmodifiers.api.modifier.Modifier;
 import lych.worldmodifiers.api.modifier.category.ModifierCategory;
@@ -27,7 +27,8 @@ public class ModifierList extends ContainerObjectSelectionList<EditModifiersScre
     public static final String EDIT_MODIFIER_MESSAGE_KEY = "editModifier.default";
     private final EditModifiersScreen editModifiersScreen;
     private final ModifierMap modifierMap;
-    private final Map<ModifierCategory, ModifierCategoryEntry> entryMap = new HashMap<>();
+    private final Map<ModifierCategory, ModifierCategoryEntry> categoryEntryMap = new HashMap<>();
+    private final Map<Modifier<?>, ModifierEntry<?>> modifierEntryMap = new HashMap<>();
 
     public ModifierList(EditModifiersScreen editModifiersScreen, ModifierMap modifierMap, Object2BooleanMap<ModifierCategory> foldedCategoryRecorder) {
         super(
@@ -35,7 +36,7 @@ public class ModifierList extends ContainerObjectSelectionList<EditModifiersScre
                 editModifiersScreen.width,
                 editModifiersScreen.getLayout().getContentHeight(),
                 editModifiersScreen.getLayout().getHeaderHeight(),
-                ModifierScreenConstants.ITEM_HEIGHT
+                ScreenConstants.ITEM_HEIGHT
         );
         this.editModifiersScreen = editModifiersScreen;
         this.modifierMap = modifierMap;
@@ -65,7 +66,7 @@ public class ModifierList extends ContainerObjectSelectionList<EditModifiersScre
     private boolean addCategoryEntry(int depth, @Nullable ModifierCategory parent, ModifierCategory category) {
         try {
             ModifierCategoryEntry entry = new ModifierCategoryEntry(editModifiersScreen, this, category, depth, category.getDisplayName().withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW));
-            entryMap.put(category, entry);
+            categoryEntryMap.put(category, entry);
             if (parent != null) {
                 ModifierCategoryEntry entryForParentCategory = getEntryForCategory(parent);
                 add2(parent, Objects.requireNonNull(entryForParentCategory), entry);
@@ -100,6 +101,7 @@ public class ModifierList extends ContainerObjectSelectionList<EditModifiersScre
                         descriptions.defaultValueText(),
                         modifier,
                         value);
+                modifierEntryMap.put(modifier, entry);
                 add2(parent, entryForParentCategory, entry);
             }
         } catch (Exception e) {
@@ -115,11 +117,11 @@ public class ModifierList extends ContainerObjectSelectionList<EditModifiersScre
             String description = modifier.getDescription().getString();
             ImmutableList.Builder<FormattedCharSequence> builder = ImmutableList.builder();
             Component descriptionTranslation = Component.translatable(description);
-            editModifiersScreen.getMinecraft().font.split(descriptionTranslation, ModifierScreenConstants.MODIFIER_TOOLTIP_MAX_WIDTH).forEach(builder::add);
+            editModifiersScreen.getMinecraft().font.split(descriptionTranslation, ScreenConstants.MODIFIER_TOOLTIP_MAX_WIDTH).forEach(builder::add);
             if (I18n.exists(MessageUtils.getTranslationKey(modifier.getWarning()))) {
                 String warning = modifier.getWarning().getString();
                 Component warningTranslation = Component.translatable(warning).withStyle(ChatFormatting.GOLD);
-                editModifiersScreen.getMinecraft().font.split(warningTranslation, ModifierScreenConstants.MODIFIER_TOOLTIP_MAX_WIDTH).forEach(builder::add);
+                editModifiersScreen.getMinecraft().font.split(warningTranslation, ScreenConstants.MODIFIER_TOOLTIP_MAX_WIDTH).forEach(builder::add);
             }
             tooltip = builder.add(defaultValueComponent.getVisualOrderText()).build();
             defaultValueText = descriptionTranslation.getString() + "\n" + defaultValueComponent.getString();
@@ -161,21 +163,26 @@ public class ModifierList extends ContainerObjectSelectionList<EditModifiersScre
         if (category == null) {
             return null;
         }
-        return entryMap.get(category);
+        return categoryEntryMap.get(category);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> ModifierEntry<T> getEntryForModifier(Modifier<T> modifier) {
+        return (ModifierEntry<T>) modifierEntryMap.get(modifier);
     }
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
         EditModifiersScreenEntry entry = getHovered();
-        if (entry != null && entry.getTooltip() != null && entry.mouseHovered(mouseX, mouseY)) {
+        if (entry != null && entry.getTooltip() != null && entry.mouseHovered(getRowLeft(), mouseX, mouseY)) {
             editModifiersScreen.setTooltipForNextRenderPass(entry.getTooltip());
         }
     }
 
     @Override
     public int getRowWidth() {
-        return ModifierScreenConstants.ROW_WIDTH;
+        return ScreenConstants.ROW_WIDTH;
     }
 
     private record ModifierDescriptions(List<FormattedCharSequence> tooltip, String defaultValueText) {}

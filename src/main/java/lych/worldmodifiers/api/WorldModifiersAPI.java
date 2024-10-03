@@ -144,7 +144,7 @@ public interface WorldModifiersAPI {
      * @return the created category
      */
     default ModifierCategory createBaseCategoryFor(String id) {
-        return APIUtils.getDummyModifierCategory();
+        return APIUtils.getDummyEmptyModifierCategory();
     }
 
     /**

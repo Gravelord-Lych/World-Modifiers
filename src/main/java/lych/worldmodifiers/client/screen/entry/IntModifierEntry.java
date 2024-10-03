@@ -6,12 +6,11 @@ import lych.worldmodifiers.client.gui.widget.ResetValueButton;
 import lych.worldmodifiers.util.MessageUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.client.gui.widget.ExtendedSlider;
 
-import static lych.worldmodifiers.api.client.screen.ModifierScreenConstants.*;
+import static lych.worldmodifiers.api.client.screen.ScreenConstants.*;
 
 public class IntModifierEntry extends AbstractModifierEntry<Integer> {
-    private final ExtendedSlider slider;
+    private final IntModifierSliderButton slider;
     private final ResetValueButton resetValueButton;
 
     public IntModifierEntry(ModifierEntryContext<Integer> context, Integer initialValue) {
@@ -26,6 +25,7 @@ public class IntModifierEntry extends AbstractModifierEntry<Integer> {
                 SLIDER_HEIGHT,
                 Component.empty(),
                 MessageUtils.getPercentSignOrEmpty(modifier),
+                editModifiersScreen,
                 context.modifierMap(),
                 modifier,
                 context.defaultValueText(),
@@ -56,7 +56,7 @@ public class IntModifierEntry extends AbstractModifierEntry<Integer> {
             float partialTick
     ) {
         renderLabel(guiGraphics, top, left, slider.getValueInt());
-        int otherObjectsWidth = getDepthOffset() + ICON_SPACING + MAX_TEXT_WIDTH + SLIDER_SPACING;
+        int otherObjectsWidth = getDepthOffset() + ICON_SPACING + MAX_MODIFIER_NAME_WIDTH + SLIDER_SPACING;
         slider.setWidth(width - otherObjectsWidth - RESET_VALUE_BUTTON_SIZE);
         slider.setX(left + otherObjectsWidth);
         slider.setY(top);
@@ -67,10 +67,20 @@ public class IntModifierEntry extends AbstractModifierEntry<Integer> {
     }
 
     @Override
-    public boolean mouseHovered(int mouseX, int mouseY) {
+    public boolean mouseHovered(int rowLeft, int mouseX, int mouseY) {
         if (slider.isHovered() || resetValueButton.isHovered()) {
             return false;
         }
-        return mouseX <= slider.getX() - SLIDER_SPACING;
+        return super.mouseHovered(rowLeft, mouseX, mouseY) && mouseX <= slider.getX() - SLIDER_SPACING;
+    }
+
+    @Override
+    public void highlight() {
+        slider.highlight();
+    }
+
+    @Override
+    public void unhighlight() {
+        slider.unhighlight();
     }
 }

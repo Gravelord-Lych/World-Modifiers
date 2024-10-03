@@ -21,7 +21,7 @@ public abstract class EditModifiersScreenEntry extends ContainerObjectSelectionL
         this.entryDepth = entryDepth;
     }
 
-    public boolean mouseHovered(int mouseX, int mouseY) {
+    public boolean mouseHovered(int rowLeft, int mouseX, int mouseY) {
         return true;
     }
 

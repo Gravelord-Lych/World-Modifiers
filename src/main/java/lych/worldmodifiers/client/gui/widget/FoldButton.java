@@ -8,7 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 
-import static lych.worldmodifiers.api.client.screen.ModifierScreenConstants.*;
+import static lych.worldmodifiers.api.client.screen.ScreenConstants.*;
 
 public class FoldButton extends Button {
     public static final Component FOLD = MessageUtils.prefixMsg("narrator.button.fold");

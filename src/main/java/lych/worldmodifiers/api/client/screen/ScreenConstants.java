@@ -1,9 +1,21 @@
 package lych.worldmodifiers.api.client.screen;
 
 /**
- * Constants used in the edit modifiers screen.
+ * Constants used in World Modifier Mod's screens.
  */
-public final class ModifierScreenConstants {
+public final class ScreenConstants {
+    /**
+     * The width of the entire edit modifiers screen.
+     */
+    public static final int ROW_WIDTH = 340;
+    /**
+     * The height of all the edit modifiers screen's entries.
+     */
+    public static final int ITEM_HEIGHT = 24;
+    /**
+     * The index of the edit modifier tab.
+     */
+    public static final int EDIT_MODIFIER_TAB_INDEX = 0;
     /**
      * The size of the modifiers' texture.
      */
@@ -15,7 +27,11 @@ public final class ModifierScreenConstants {
     /**
      * The maximum width of the name text of the modifiers.
      */
-    public static final int MAX_TEXT_WIDTH = 100;
+    public static final int MAX_MODIFIER_NAME_WIDTH = 100;
+    /**
+     * The maximum width of the conflict message text.
+     */
+    public static final int MAX_CONFLICT_MESSAGE_WIDTH = 310;
     /**
      * Used to calculate the x position offset of a modifier entry. For example, if a
      * modifier entry's depth is 2, the x position offset will be 20.
@@ -40,15 +56,15 @@ public final class ModifierScreenConstants {
     /**
      * The height of each line of a modifier entry's name.
      */
-    public static final int MODIFIER_ENTRY_NAME_LINE_HEIGHT = 5;
+    public static final int MODIFIER_ENTRY_NAME_LINE_HEIGHT = 10;
     /**
-     * The height of all the edit modifiers screen's entries.
+     * The height of each line of a conflict message.
      */
-    public static final int ITEM_HEIGHT = 24;
+    public static final int CONFLICT_MESSAGE_LINE_HEIGHT = 10;
     /**
-     * The width of the entire edit modifiers screen.
+     * The height between each conflict message.
      */
-    public static final int ROW_WIDTH = 340;
+    public static final int CONFLICT_MESSAGE_SPACING = 24;
     /**
      * The height of the slider.
      */
@@ -78,7 +94,7 @@ public final class ModifierScreenConstants {
      * When the count of modified modifiers reaches this number, the confirm screen will be shown if
      * the player presses the "cancel" button.
      */
-    public static final int SHOW_CONFIRM_SCREEN_REQUIRED_MODIFICATION_COUNT = 2;
+    public static final int SHOW_CONFIRM_SCREEN_REQUIRED_MODIFICATION_COUNT = 3;
 
-    private ModifierScreenConstants() {}
+    private ScreenConstants() {}
 }

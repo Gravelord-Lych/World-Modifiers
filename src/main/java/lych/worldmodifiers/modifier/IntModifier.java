@@ -4,12 +4,15 @@ import com.google.gson.JsonObject;
 import lych.worldmodifiers.WorldModifiersMod;
 import lych.worldmodifiers.api.client.screen.entry.ModifierEntry;
 import lych.worldmodifiers.api.modifier.IntModifierBuilder;
+import lych.worldmodifiers.api.modifier.Modifier;
 import lych.worldmodifiers.api.modifier.SortingPriority;
 import lych.worldmodifiers.api.modifier.category.ModifierCategory;
 import lych.worldmodifiers.api.modifier.texture.ModifierTextureProvider;
 import lych.worldmodifiers.client.screen.entry.IntModifierEntry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
+
+import javax.annotation.Nullable;
 
 public final class IntModifier extends AbstractModifier<Integer> {
     private final int defaultValue;
@@ -44,7 +47,7 @@ public final class IntModifier extends AbstractModifier<Integer> {
     }
 
     public static IntModifierBuilder builder(String id, String name) {
-        return new Builder(id, name);
+        return new BuilderImpl(id, name);
     }
 
     @Override
@@ -108,54 +111,62 @@ public final class IntModifier extends AbstractModifier<Integer> {
     }
 
     @SuppressWarnings("NotNullFieldNotInitialized")
-    public static class Builder implements IntModifierBuilder {
+    public static class BuilderImpl implements IntModifierBuilder {
         private final String id;
         private final String name;
         private ModifierCategory parent;
         private SortingPriority priority = SortingPriority.NORMAL;
         private ModifierTextureProvider<? super Integer> textureProvider;
+        @Nullable
+        private Modifier<?> genericModifier;
         private int defaultValue;
         private int minValue;
         private int maxValue;
         private boolean representsPercentage;
 
-        Builder(String id, String name) {
+        BuilderImpl(String id, String name) {
             this.id = id;
             this.name = name;
         }
 
         @Override
-        public Builder setParent(ModifierCategory parent) {
+        public IntModifierBuilder setParent(ModifierCategory parent) {
             this.parent = parent;
             return this;
         }
 
         @Override
-        public Builder setSortingPriority(SortingPriority priority) {
+        public IntModifierBuilder setSortingPriority(SortingPriority priority) {
             this.priority = priority;
             return this;
         }
 
         @Override
-        public Builder setTextureProvider(ModifierTextureProvider<? super Integer> textureProvider) {
+        public IntModifierBuilder setTextureProvider(ModifierTextureProvider<? super Integer> textureProvider) {
             this.textureProvider = textureProvider;
             return this;
         }
 
         @Override
-        public Builder setDefaultValue(int defaultValue) {
+        public IntModifierBuilder setGenericModifier(Modifier<?> genericModifier) {
+            this.genericModifier = genericModifier;
+            return this;
+        }
+
+        @Override
+        public IntModifierBuilder setDefaultValue(int defaultValue) {
             this.defaultValue = defaultValue;
             return this;
         }
 
         @Override
-        public Builder setMinValue(int minValue) {
+        public IntModifierBuilder setMinValue(int minValue) {
             this.minValue = minValue;
             return this;
         }
 
         @Override
-        public Builder setMaxValue(int maxValue) {
+        public IntModifierBuilder setMaxValue(int maxValue) {
             this.maxValue = maxValue;
             return this;
         }
@@ -179,6 +190,11 @@ public final class IntModifier extends AbstractModifier<Integer> {
                     representsPercentage);
             NameToModifierMap.put(modifier);
             parent.addChildModifier(modifier);
+            if (genericModifier != null) {
+                ModifierTree.add(genericModifier, modifier);
+            } else {
+                ModifierTree.add(modifier);
+            }
             return modifier;
         }
     }

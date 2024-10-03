@@ -5,6 +5,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
+import java.util.Comparator;
 import java.util.Set;
 
 /**
@@ -57,4 +58,23 @@ public interface BaseModifier {
      * @return the warning description.
      */
     MutableComponent getWarning();
+
+    /**
+     * Returns a comparator that can be used to sort modifiers and modifier categories.
+     */
+    static Comparator<BaseModifier> getComparator() {
+        return (e1, e2) -> {
+            if (e1 instanceof ModifierCategory && e2 instanceof Modifier) {
+                return 1;
+            } else if (e1 instanceof Modifier && e2 instanceof ModifierCategory) {
+                return -1;
+            } else {
+                int priorityComparisonResult = e1.getPriority().compareTo(e2.getPriority());
+                if (priorityComparisonResult != 0) {
+                    return priorityComparisonResult;
+                }
+                return e1.getFullName().compareTo(e2.getFullName());
+            }
+        };
+    }
 }

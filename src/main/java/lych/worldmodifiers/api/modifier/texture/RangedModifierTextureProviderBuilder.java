@@ -32,7 +32,7 @@ public interface RangedModifierTextureProviderBuilder<T extends Comparable<? sup
      * Binds a texture to a modifier value.
      *
      * @param modifierValue the value of the modifier
-     * @param textureLocation  the texture
+     * @param textureLocation the texture
      * @return the builder itself
      */
     default RangedModifierTextureProviderBuilder<T> addTexture(T modifierValue, ResourceLocation textureLocation) {

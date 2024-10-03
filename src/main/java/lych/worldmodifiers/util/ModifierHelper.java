@@ -7,6 +7,7 @@ import lych.worldmodifiers.client.screen.EditModifiersScreen;
 import lych.worldmodifiers.client.screen.entry.ModifierEntryContext;
 import lych.worldmodifiers.modifier.ModifierMap;
 import lych.worldmodifiers.modifier.StoredModifiers;
+import lych.worldmodifiers.modifier.selector.ModifierSelector;
 import lych.worldmodifiers.network.ModifierNetwork;
 import lych.worldmodifiers.util.mixin.IAdditionalClientLevelData;
 import lych.worldmodifiers.util.mixin.IMinecraftServerMixin;
@@ -33,6 +34,17 @@ public final class ModifierHelper {
 
     public static <T> T getModifierValue(MinecraftServer server, Modifier<T> modifier) {
         return ((IMinecraftServerMixin) server).worldModifiers$getStoredModifiers().getModifierValue(modifier);
+    }
+
+    public static <T, R> R getModifierValue(LevelAccessor level, ModifierSelector<? super T, R> selector, T object) {
+        if (level.isClientSide()) {
+            return ((IAdditionalClientLevelData) level.getLevelData()).worldModifiers$getSynchedModifiers().getModifierValue(selector, object);
+        }
+        return getModifierValue(Objects.requireNonNull(level.getServer()), selector, object);
+    }
+
+    public static <T, R> R getModifierValue(MinecraftServer server, ModifierSelector<? super T, R> selector, T object) {
+        return ((IMinecraftServerMixin) server).worldModifiers$getStoredModifiers().getModifierValue(selector, object);
     }
 
     @CanIgnoreReturnValue
@@ -116,4 +128,5 @@ public final class ModifierHelper {
             throw new IllegalArgumentException("Failed to create entry for class %s".formatted(entryClass.getSimpleName()), e);
         }
         return entry;
-    }}
+    }
+}

@@ -7,10 +7,15 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Set;
 
 /**
- * Interface for all world modifiers. You should not implement this interface directly, but you can use
+ * Interface for all world modifiers.
+ *
+ * @apiNote You should not implement this interface directly, but you can use
  * {@link IntModifierBuilder} to create a new modifier.
+ *
  * @param <T> the type of the modifier's value
  */
 public interface Modifier<T> extends BaseModifier {
@@ -20,28 +25,28 @@ public interface Modifier<T> extends BaseModifier {
 
     /**
      * Serializes the modifier's value to a JSON object.
-     * @param value The value to serialize
-     * @param data The JSON object to serialize to
+     * @param value the value to serialize
+     * @param data the JSON object to serialize to
      */
     void serializeToJson(T value, JsonObject data);
 
     /**
      * Deserializes the modifier's value from a JSON object.
-     * @param data The JSON object to deserialize from
+     * @param data the JSON object to deserialize from
      * @return the deserialized value
      */
     T deserializeFromJson(JsonObject data);
 
     /**
      * Serializes the modifier's value to a network buffer.
-     * @param value The value to serialize
-     * @param buf The network buffer to serialize to
+     * @param value the value to serialize
+     * @param buf the network buffer to serialize to
      */
     void serializeToNetwork(T value, FriendlyByteBuf buf);
 
     /**
      * Deserializes the modifier's value from a network buffer.
-     * @param buf The network buffer to deserialize from
+     * @param buf the network buffer to deserialize from
      * @return the deserialized value
      */
     T deserializeFromNetwork(FriendlyByteBuf buf);
@@ -75,12 +80,62 @@ public interface Modifier<T> extends BaseModifier {
     ResourceLocation getTextureLocation(T value);
 
     /**
+     * Returns an unmodifiable empty set because modifiers can not have children.
+     * @return an empty set
+     */
+    @Override
+    default Set<BaseModifier> getChildren() {
+        return Set.of();
+    }
+
+    /**
      * Returns the parent category of the modifier.
      * @return the parent category
      */
     @Nonnull
     @Override
     ModifierCategory getParent();
+
+    /**
+     * Returns the corresponding specific modifiers of the modifier if this is a generic modifier,
+     * otherwise returns an empty set.
+     * <p>
+     * Specific modifiers are modifiers which are only applicable to a specific type of affectable
+     * objects. For example, the max health modifier for animals can only affect animals' max health.
+     * Note that a modifier can be both a generic modifier and a specific modifier, or neither a
+     * generic modifier nor a specific modifier.
+     *
+     * @return the specific modifiers
+     */
+    Set<Modifier<?>> getSpecificModifiers();
+
+    /**
+     * Returns the corresponding generic modifier of the modifier if this is a specific modifier,
+     * otherwise returns <code>null</code>.
+     * <p>
+     * Generic modifiers are modifiers which are applicable to all types of affectable objects.
+     * For example, the generic max health modifier can affect all living entities' max health.
+     *
+     * @return the generic modifier
+     */
+    @Nullable
+    Modifier<?> getGenericModifier();
+
+    /**
+     * Returns whether the modifier is a specific modifier.
+     * @return <code>true</code> if the modifier is a specific modifier, <code>false</code> otherwise
+     */
+    default boolean isSpecific() {
+        return getGenericModifier() != null;
+    }
+
+    /**
+     * Returns whether the modifier is a generic modifier.
+     * @return <code>true</code> if the modifier is a generic modifier, <code>false</code> otherwise
+     */
+    default boolean isGeneric() {
+        return !getSpecificModifiers().isEmpty();
+    }
 
     /**
      * Returns the default value of the modifier.

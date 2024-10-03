@@ -7,8 +7,10 @@ import lych.worldmodifiers.api.modifier.SortingPriority;
 import lych.worldmodifiers.api.modifier.category.ModifierCategory;
 import lych.worldmodifiers.api.modifier.texture.ModifierTextureProvider;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -42,6 +44,21 @@ public abstract class AbstractModifier<T> extends AbstractBaseModifier implement
     @Override
     public final Set<BaseModifier> getChildren() {
         return Set.of();
+    }
+
+    @Nullable
+    @Override
+    public Modifier<?> getGenericModifier() {
+        Modifier<?> parent = ModifierTree.getParent(this);
+        return parent == ModifierTree.getRoot() ? null : parent;
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    @Override
+    public Set<Modifier<?>> getSpecificModifiers() {
+        Set<Modifier<?>> modifiers = new HashSet<>(ModifierTree.viewTree().adjacentNodes(this));
+        modifiers.remove(getGenericModifier());
+        return modifiers;
     }
 
     @Override

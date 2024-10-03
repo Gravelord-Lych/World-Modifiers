@@ -3,7 +3,6 @@ package lych.worldmodifiers.test;
 import lych.worldmodifiers.WorldModifiersMod;
 import lych.worldmodifiers.api.APIUtils;
 import lych.worldmodifiers.api.WorldModifiersAPI;
-import lych.worldmodifiers.api.modifier.BaseModifier;
 import lych.worldmodifiers.api.modifier.Modifier;
 import lych.worldmodifiers.api.modifier.ModifierNames;
 import lych.worldmodifiers.api.modifier.category.ModifierCategory;
@@ -43,12 +42,11 @@ public class APITest {
     @Test
     public void testDummyValues() {
         try {
-            ModifierCategory dummyModifierCategory = APIUtils.getDummyModifierCategory();
+            ModifierCategory dummyModifierCategory = APIUtils.getDummyEmptyModifierCategory();
             Modifier<Integer> dummyIntModifier = new WorldModifiersAPI() {}.getIntModifierBuilder("dummy", "dummy")
                     .setValueRange(0, 100)
                     .setDefaultValue(50)
                     .build();
-            System.out.println(dummyIntModifier.getEntryClass());
             testDummyValue(dummyModifierCategory);
             testDummyValue(dummyIntModifier);
         } catch (Exception e) {
@@ -60,7 +58,7 @@ public class APITest {
         Assertions.assertNull(dummy.getParent());
     }
 
-    private static void testDummyValue(BaseModifier dummy) {
+    private static void testDummyValue(Modifier<?> dummy) {
         Assertions.assertNotNull(dummy.getParent());
         Assertions.assertNotNull(dummy.getParent().getChildren());
         Assertions.assertFalse(dummy.getParent().getChildren().isEmpty());
@@ -70,8 +68,8 @@ public class APITest {
 
     @Test
     public void testModifierGetter() {
-        Optional<Modifier<?>> modifierByName1 = WorldModifiersAPI.getInstance().getModifierByName(WorldModifiersMod.MODID, ModifierNames.MAX_HEALTH);
-        Optional<Modifier<?>> modifierByName2 = NameToModifierMap.byFullName(WorldModifiersMod.MODID + ":" + ModifierNames.MAX_HEALTH);
+        Optional<Modifier<?>> modifierByName1 = WorldModifiersAPI.getInstance().getModifierByName(WorldModifiersMod.MODID, ModifierNames.MAX_HEALTH_GENERIC);
+        Optional<Modifier<?>> modifierByName2 = NameToModifierMap.byFullName(WorldModifiersMod.MODID + ":" + ModifierNames.MAX_HEALTH_GENERIC);
         Assertions.assertTrue(modifierByName1.isPresent());
         Assertions.assertTrue(modifierByName2.isPresent());
         Assertions.assertSame(modifierByName2.get(), modifierByName1.get());

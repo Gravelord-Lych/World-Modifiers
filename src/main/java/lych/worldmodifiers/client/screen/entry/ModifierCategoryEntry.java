@@ -13,7 +13,7 @@ import net.minecraft.network.chat.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-import static lych.worldmodifiers.api.client.screen.ModifierScreenConstants.*;
+import static lych.worldmodifiers.api.client.screen.ScreenConstants.*;
 
 public class ModifierCategoryEntry extends EditModifiersScreenEntry {
     private final List<EditModifiersScreenEntry> subEntries = new ArrayList<>();
@@ -107,6 +107,9 @@ public class ModifierCategoryEntry extends EditModifiersScreenEntry {
             } else {
                 recursivelyAddChildren(modifierList.children().indexOf(this) + 1);
             }
+        }
+        if (folded && modifierList.getScrollAmount() > modifierList.getMaxScroll()) {
+            modifierList.setScrollAmount(modifierList.getMaxScroll());
         }
     }
 

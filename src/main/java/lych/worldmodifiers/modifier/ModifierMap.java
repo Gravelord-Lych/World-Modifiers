@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import lych.worldmodifiers.api.modifier.Modifier;
+import lych.worldmodifiers.modifier.selector.ModifierSelector;
 import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import org.slf4j.Logger;
@@ -75,6 +76,14 @@ public class ModifierMap {
             value = modifier.getDefaultValue();
         }
         return value;
+    }
+
+    public <T, R> R getModifierValue(ModifierSelector<? super T, R> selector, T object) {
+        return getModifierValue(selector.selectModifier(object, this));
+    }
+
+    public boolean valueChanged(Modifier<?> modifier) {
+        return !Objects.equals(modifier.getDefaultValue(), getModifierValue(modifier));
     }
 
     @SuppressWarnings("unchecked")

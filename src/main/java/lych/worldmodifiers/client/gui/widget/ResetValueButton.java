@@ -6,7 +6,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import static lych.worldmodifiers.api.client.screen.ModifierScreenConstants.RESET_VALUE_BUTTON_SIZE;
+import static lych.worldmodifiers.api.client.screen.ScreenConstants.RESET_VALUE_BUTTON_SIZE;
 
 public class ResetValueButton extends Button {
     public static final Component RESET_VALUE = MessageUtils.prefixMsg("narrator.button.resetValue");

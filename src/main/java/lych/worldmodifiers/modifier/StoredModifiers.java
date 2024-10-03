@@ -1,10 +1,13 @@
 package lych.worldmodifiers.modifier;
 
 import com.google.common.io.Files;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.mojang.logging.LogUtils;
 import lych.worldmodifiers.WorldModifiersMod;
 import lych.worldmodifiers.api.modifier.Modifier;
+import lych.worldmodifiers.modifier.selector.ModifierSelector;
 import net.minecraft.world.level.storage.LevelResource;
 import org.slf4j.Logger;
 
@@ -22,7 +25,6 @@ public class StoredModifiers {
     private final File file;
     private final ModifierMap map;
 
-//    @SuppressWarnings("ResultOfMethodCallIgnored")
     public StoredModifiers(File file) {
         this.file = file;
         this.map = new ModifierMap();
@@ -66,6 +68,10 @@ public class StoredModifiers {
 
     public <T> T getModifierValue(Modifier<T> modifier) {
         return map.getModifierValue(modifier);
+    }
+
+    public <T, R> R getModifierValue(ModifierSelector<? super T, R> selector, T object) {
+        return map.getModifierValue(selector, object);
     }
 
     public <T> T setModifierValue(Modifier<T> modifier, T value) {

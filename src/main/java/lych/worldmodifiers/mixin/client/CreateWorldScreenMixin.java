@@ -97,13 +97,14 @@ public class CreateWorldScreenMixin {
         private void worldModifiers$openModifiersScreen() {
             Minecraft minecraft = Minecraft.getInstance();
             IWorldCreationUiStateMixin uiState = worldModifiers$getUiStateAccessor();
-            minecraft.setScreen(new EditModifiersScreen(uiState.worldModifiers$getModifierMap().copy(),
+            EditModifiersScreen editModifiersScreen = new EditModifiersScreen(uiState.worldModifiers$getModifierMap().copy(),
                     new Object2BooleanArrayMap<>(uiState.worldModifiers$getFoldedStateRecorder()),
                     (modifierMapOptional, foldedStateRecorderOptional) -> {
                         minecraft.setScreen(this$0);
                         modifierMapOptional.ifPresent(uiState::worldModifiers$setModifierMap);
                         foldedStateRecorderOptional.ifPresent(uiState::worldModifiers$setFoldedStateRecorder);
-                    }));
+                    });
+            minecraft.setScreen(editModifiersScreen);
         }
 
         @Unique
