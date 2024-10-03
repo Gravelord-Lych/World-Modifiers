@@ -1,27 +1,19 @@
 
-Installation information
+World Modifiers
 =======
 
-This template repository can be directly cloned to get you started with a new
-mod. Simply create a new repository cloned from this one, by following the
-instructions at [github](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+World Modifiers enables you to modify some additional part of a world like entities' attributes and ore generation to create a more customized world for certain purposes such as creating a survival challenge.
 
-Once you have your clone, simply open the repository in the IDE of your choice. The usual recommendation for an IDE is either IntelliJ IDEA or Eclipse.
-
-> **Note**: For Eclipse, use tasks in `Launch Group` instead of ones founds in `Java Application`. A preparation task must run before launching the game. NeoGradle uses launch groups to do these subsequently.
-
-If at any point you are missing libraries in your IDE, or you've run into problems you can
-run `gradlew --refresh-dependencies` to refresh the local cache. `gradlew clean` to reset everything 
-{this does not affect your code} and then start the process again.
-
-Mapping Names:
+Features:
 ============
-By default, the MDK is configured to use the official mapping names from Mojang for methods and fields 
-in the Minecraft codebase. These names are covered by a specific license. All modders should be aware of this
-license. For the latest license text, refer to the mapping file itself, or the reference copy here:
-https://github.com/NeoForged/NeoForm/blob/main/Mojang.md
+- **Extreme Difficulty**: If enabled, hostile mobs will spawn and deal even more damage. The depletion of the hunger bar brings deadlier effects as well. Extreme Difficulty can only be enabled when the world difficulty is set to Hard.
+- **Mob Attribute Modifiers**: You can modify the attributes of mobs in the world. For example, you can increase or decrease the health, damage, speed and so on of mobs.
+- **Projectile Attribute Modifiers (WIP)**: You can modify things like the flying speed of the projectiles.
+- **Ore Generation Modifiers (WIP)**: You can modify the ore generation of the world. You can increase or decrease the amount of ores that spawn in the world.
+- **World Generation Modifiers (WIP)**: You can increase or decrease the number of structures, caves, biomes in the world.
+- **Modifier Presets (WIP)**: The mod will provide some preset challenges by modifying the values of the modifiers mentioned above. The presets can help you survive more easily or make the game more challenging.
 
-Additional Resources: 
+About the author: 
 ==========
-Community Documentation: https://docs.neoforged.net/  
-NeoForged Discord: https://discord.neoforged.net/
+The author's blog: https://blog.constance.moe  
+
